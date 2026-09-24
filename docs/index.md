@@ -28,6 +28,17 @@ Wie'gehts，我是王乐圆（Leyuan Wang），在南开大学物理学院做量
   <li>device-independent · Bell-nonlocality</li>
 </ul>
 
+<div class="fl-hero__formula" aria-hidden="true" markdown>
+
+$$
+\begin{aligned}
+&\Phi_A\otimes\Phi_B\otimes\mathbb{1}_P\Big[\mathsf{M}_{a|x}\otimes\mathsf{N}_{b|y}\otimes\mathbb{1}_P\,|\psi\rangle_{ABP}\Big]\\
+&\qquad=\Big(\mathsf{M}'_{a|x}\otimes\mathsf{N}'_{b|y}\,|\psi'\rangle_{A'B'}\Big)\otimes|\xi\rangle_{\bar{A}\bar{B}P}
+\end{aligned}
+$$
+
+</div>
+
 </div>
 
 <h2 class="fl-home-heading">三个板块</h2>

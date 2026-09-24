@@ -80,13 +80,13 @@ PDF 与介绍页同目录同名（`xxx.md` + `xxx.pdf`），介绍页里写摘�
 
   | 类型 | 用途 | 颜色 |
   |---|---|---|
-  | `definition` | 定义 | 灰蓝 |
-  | `theorem` / `lemma` / `corollary` / `proposition` | 定理类（正文斜体） | 陶土 |
-  | `proof` | 证明（结尾自动加 ∎，通常用 `???` 折叠） | 石灰 |
-  | `example` | 例题 | 橄榄绿 |
-  | `warning` | 注意 | 琥珀 |
-  | `summary` | 总结 | 暗梅 |
-  | `note` / `tip` / `danger` | 备注 / 提示 / 危险 | 灰青 / 灰青 / 砖红 |
+  | `definition` | 定义 | 墨绿 |
+  | `theorem` / `lemma` / `corollary` / `proposition` | 定理类（正文斜体） | 深青绿 |
+  | `proof` | 证明（结尾自动加 ∎，通常用 `???` 折叠） | 灰 |
+  | `example` | 例题 | 蓝灰 |
+  | `warning` | 注意 | 砖红 |
+  | `summary` | 总结 | 暗金 |
+  | `note` / `tip` / `danger` | 备注 / 提示 / 危险 | 灰绿 / 灰绿 / 深砖红 |
 
 - **副标题**：标题下一行写一句话，下一行 `{ .page-lead }`。
 - **长文分部分**：`**第一部分** 标题` 下一行 `{ .part-divider }`（不要用多个一级标题）。
@@ -108,21 +108,43 @@ PDF 与介绍页同目录同名（`xxx.md` + `xxx.pdf`），介绍页里写摘�
 
 ## 配色与字体
 
-所有颜色是 `docs/stylesheets/extra.css` 开头的 `--fl-*` 变量，其余规则只引用变量。改色只改这里。
+配色风格为"书卷墨绿"：纸色背景、墨色正文、墨绿强调。所有颜色都是 `docs/stylesheets/extra.css`
+开头的 `--fl-*` 变量（浅色一组、深色一组），其余规则只引用变量，改色只改这里。
+正文、次要文字、强调色、提示框标题和代码高亮与背景的对比度都满足 WCAG AA（≥ 4.5:1），改色后要重新核对。
 
-| 用途 | 浅色（默认） | 深色 |
-|---|---|---|
-| 背景 `--fl-bg` | `#FAF9F5` 暖米白 | `#262624` |
-| 侧栏/卡片 `--fl-surface` | `#F0EEE6` | `#30302E` |
-| 正文 `--fl-text` | `#141413` 深炭 | `#ECEBE4` |
-| 次要文字 `--fl-text-2` | `#5E5D59` | `#B7B5AC` |
-| 强调 `--fl-accent` | `#D97757` 陶土橙 | `#D97757` |
-| 链接 `--fl-link` | `#C15F3C` | `#E8906F` |
+| 用途 | 变量 | 浅色 | 深色（夜读） |
+|---|---|---|---|
+| 页面背景 | `--fl-bg` | `#F6F3EA` 纸色 | `#161B18` |
+| 顶栏、侧栏、卡片、代码块、表头 | `--fl-surface` | `#ECE6D6` | `#1F2622` |
+| 正文 | `--fl-text` | `#1E2A23` 墨色 | `#E8E4D8` 米色 |
+| 次要文字（日期、简介、说明） | `--fl-text-2` | `#5B6660` | `#A3ABA5` |
+| 强调（链接、按钮、当前导航、标签文字） | `--fl-accent` | `#2F6B4F` 墨绿 | `#7DBF9C` 浅墨绿 |
+| 链接悬停 | `--fl-accent-hover` | `#23523C` | `#9ED3B6` |
+| 边框、分隔线 | `--fl-border` | `#D9D1BC` | `#2E3832` |
 
+提示框（同一色系、低饱和）：
+
+| 类型 | 变量 | 浅色 | 深色 |
+|---|---|---|---|
+| 定义 `definition` | `--fl-def` | `#2F6B4F` 墨绿 | `#7DBF9C` |
+| 定理类 `theorem` 等 | `--fl-thm` | `#1D6461` 深青绿 | `#6EC2BA` |
+| 证明 `proof` | `--fl-proof` | `#5F6763` 灰 | `#A3ABA5` |
+| 例题 `example` | `--fl-ex` | `#4F6A84` 蓝灰 | `#9CB4CF` |
+| 注意 `warning` | `--fl-warn` | `#9E4636` 砖红 | `#E3907E` |
+| 总结 `summary` | `--fl-sum` | `#7A5E24` 暗金 | `#D8BA6C` |
+| 备注 `note` / `tip` | `--fl-note` | `#4F6F62` | `#9DBDAF` |
+| 危险 `danger` | `--fl-danger` | `#8E3B2F` | `#EA8272` |
+
+代码高亮用 `--fl-code-*` 变量（关键字、字符串、数字、函数、常量、注释），同样两套。数学公式颜色跟随正文。
+
+- 模式切换：顶栏按钮在 **跟随系统 → 浅色 → 深色** 之间循环，默认跟随系统，选择会记住
+  （`zensical.toml` 里的三段 `[[project.theme.palette]]`）。
+- Logo / favicon（`docs/assets/*.svg`）是墨绿底纸色字，颜色写死在 SVG 里。
+- 首页 hero 右侧的 self-testing 公式在 `docs/index.md` 的 `.fl-hero__formula` 里，窄屏时移到介绍下方。
 - 标题：Source Serif 4 + Noto Serif SC（`extra.css` 顶部 `@import`）
 - 正文：Noto Sans SC；代码：JetBrains Mono（`zensical.toml` 的 `theme.font`）
 - Google Fonts 加载失败时回退到苹方 / 微软雅黑 / 宋体。
-- 卡片：圆角 0.8–1rem、1px 细边框、悬停上移 2px 并出现阴影与陶土色边框。
+- 卡片：圆角 0.8–1rem、1px 细边框、悬停上移 2px 并出现阴影与墨绿边框。
 
 ## 已知限制
 

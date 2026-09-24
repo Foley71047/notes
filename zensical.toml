@@ -92,20 +92,30 @@ repo = "fontawesome/brands/github"
 [project.theme.icon.tag]
 default = "lucide/hash"
 
-# 浅色（默认）→ 深色。具体色值在 docs/stylesheets/extra.css 中覆盖。
+# 配色切换：跟随系统（默认）→ 浅色 → 深色 → 跟随系统……，选择会自动记住。
+# 具体色值在 docs/stylesheets/extra.css 中覆盖。toggle.name 是"点击后切换到"的状态。
 [[project.theme.palette]]
+media = "(prefers-color-scheme)"
+primary = "custom"
+accent = "custom"
+toggle.icon = "lucide/sun-moon"
+toggle.name = "当前：跟随系统（点击切换到浅色）"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
 scheme = "default"
 primary = "custom"
 accent = "custom"
-toggle.icon = "lucide/moon"
-toggle.name = "切换到深色模式"
+toggle.icon = "lucide/sun"
+toggle.name = "当前：浅色（点击切换到深色）"
 
 [[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
 scheme = "slate"
 primary = "custom"
 accent = "custom"
-toggle.icon = "lucide/sun"
-toggle.name = "切换到浅色模式"
+toggle.icon = "lucide/moon"
+toggle.name = "当前：深色（点击切换到跟随系统）"
 
 # ----------------------------------------------------------------------------
 # 页脚
