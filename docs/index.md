@@ -1,6 +1,6 @@
 ---
 title: 首页
-description: 王乐圆（Leyuan Wang）的个人知识库：量子信息科研笔记、系统教程与兴趣探索。
+description: 王乐圆（Leyuan Wang）的个人知识space：量子信息科研笔记、 系统教程与一些其他知识分享。
 hide:
   - navigation
   - toc
@@ -17,15 +17,15 @@ search:
 <h1 class="fl-hero__title">Foley的笔记</h1>
 
 <p class="fl-hero__lead">
-你好，我是王乐圆（Leyuan Wang），在南开大学物理学院做量子信息方向的研究。
-这里是我的个人知识库：记录科研里的推导与思考，整理系统学习的课程笔记，也存放一些学业之外的探索。
-写下来，是为了想得更清楚。
+Wie'gehts，我是王乐圆（Leyuan Wang），在南开大学物理学院做量子信息方向的研究。
+这里是我的个人笔记空间：随便记录科研里的笔记（目前大部分为ai直出,内容不够精美简介，努力修改中）。
+
 </p>
 
 <ul class="fl-hero__meta">
   <li>南开大学物理学院</li>
-  <li>量子信息</li>
-  <li>器件无关 · Bell 非局域性</li>
+  <li>QUANTUM IMFORMATION AND QUANTUM COMPUTATION</li>
+  <li>device-independent · Bell-nonlocality</li>
 </ul>
 
 </div>
@@ -44,7 +44,7 @@ search:
 <a class="fl-section-card" href="tutorials/">
   <span class="fl-section-card__icon">:lucide-graduation-cap:</span>
   <span class="fl-section-card__title">教程<span class="fl-section-card__en">Tutorials</span></span>
-  <span class="fl-section-card__desc">系统性的课程与学习笔记，从量子力学到量子信息基础。</span>
+  <span class="fl-section-card__desc">系统性的课程与学习笔记。</span>
   <span class="fl-section-card__go">进入教程 →</span>
 </a>
 
