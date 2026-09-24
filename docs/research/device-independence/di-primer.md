@@ -1,5 +1,18 @@
+---
+description: 从"假设记账"出发梳理器件无关（DI）的逻辑：黑盒与概率表、soundness 与 completeness、self-testing 的等价类、半 DI 谱系，并用纠缠深度判据项目逐条对照。
+tags:
+  - 器件无关
+  - Bell 非局域性
+  - 自检验
+  - 网络非局域性
+  - 纠缠深度
+  - 研究总结
+---
+
 # 器件无关（DI）到底在讲什么
-### ——一份从假设记账出发的梳理，配你自己的项目做例子
+
+一份从假设记账出发的梳理，配你自己的项目做例子
+{ .page-lead }
 
 ---
 
@@ -165,7 +178,7 @@ DI 这个概念是从**密码学**长出来的，不是从基础物理长出来�
 | 步骤 | 你的方案 | 状态 |
 |---|---|---|
 | 1 因果结构 | $n$ 个源的星型网络，$n$ 个外部方 + 中心方，源独立 | ✅ |
-| 2 数据 | $p(\vec a,c\,|\,\vec x)$，含 $p(c)$ | ✅ |
+| 2 数据 | $p(\vec a,c\,\vert\,\vec x)$，含 $p(c)$ | ✅ |
 | 3 性质 | $M_c$ 关于 $C_1\vert\cdots\vert C_n$ **不是** $k$-producible | ✅（但要注意 §6.3 的不变性，见下） |
 | 4 soundness | 交换引理 + 态的深度 Bell 界 $S^{Q,*}_k$ | ✅（$\zeta>0$ 的洞待补） |
 | 5 completeness | GHZ projector + $X$–$Y$ 平面 ansatz，达到 $S^{Q,*}_n$ | ✅ |
@@ -209,7 +222,7 @@ $$\Phi(\rho)=|\psi^\star\rangle\langle\psi^\star|\otimes\xi,\qquad \Phi(M_{a|x}\
 ### 6.5 self-testing 的两个"最强"结果，可以当参照系
 - 网络里可以自检**任意纠缠态**：[Šupić, Bowles, Renou, Acín, Hoban, *Nature Physics* **19**, 670 (2023)](https://www.nature.com/articles/s41567-023-01945-4)
 - 网络里可以自检**任意态或任意测量**（你手上那篇）：[Sarkar, Orthey, Augusiak, *Nature Physics* (2026)](https://doi.org/10.1038/s41567-026-03181-y)
-- 自检**纠缠测量**的起点：[Renou et al., *PRL* **121**, 250507 (2018)] 与 [Bancal, Sangouard, Sekatski, *PRL* **121**, 250506 (2018)](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.121.250506)
+- 自检**纠缠测量**的起点：[Renou et al., *PRL* **121**, 250507 (2018)](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.121.250507) 与 [Bancal, Sangouard, Sekatski, *PRL* **121**, 250506 (2018)](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.121.250506)
 
 ---
 
@@ -220,7 +233,7 @@ $$\Phi(\rho)=|\psi^\star\rangle\langle\psi^\star|\otimes\xi,\qquad \Phi(M_{a|x}\
 | 格 | 信任什么 | 不信任什么 | 代表文献 |
 |---|---|---|---|
 | **完全器件相关**（层析） | 全部测量、全部制备 | — | 标准 state tomography |
-| **维数受限半 DI** | 只信任希尔伯特空间维数上界 | 态、测量 | [Gallego et al., *PRL* **105**, 230501 (2010)](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.105.230501)；[Pawłowski & Brunner, *PRA* **84**, 010302(R) (2011)](https://journals.aps.org/pra/abstract/10.1103/PhysRevA.84.010302)；**Tavakoli et al. [arXiv:1805.00377]**（认证纠缠测量） |
+| **维数受限半 DI** | 只信任希尔伯特空间维数上界 | 态、测量 | [Gallego et al., *PRL* **105**, 230501 (2010)](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.105.230501)；[Pawłowski & Brunner, *PRA* **84**, 010302(R) (2011)](https://journals.aps.org/pra/abstract/10.1103/PhysRevA.84.010302)；**Tavakoli et al. [arXiv:1805.00377](https://arxiv.org/abs/1805.00377)**（认证纠缠测量） |
 | **MDI / semi-quantum** | 信任**制备**（送进去的量子态已知） | 测量设备完全不信任 | [Buscemi, *PRL* **108**, 200401 (2012)](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.108.200401)；[Branciard, Rosset, Liang, Gisin, *PRL* **110**, 060405 (2013)](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.110.060405)；[Zhao-Yuan-Ma, arXiv:1607.08002](https://ar5iv.arxiv.org/html/1607.08002) |
 | **单边 DI（steering）** | 信任一方的测量 | 另一方全部 | [Wiseman, Jones, Doherty, *PRL* **98**, 140402 (2007)](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.98.140402) |
 | **网络 DI** | 只信任**因果结构**（源独立） | 态、测量、维数全部 | [Branciard, Gisin, Pironio, *PRL* **104**, 170401 (2010)](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.104.170401)；[Branciard et al., *PRA* **85**, 032119 (2012)](https://link.aps.org/doi/10.1103/PhysRevA.85.032119) |
@@ -305,7 +318,7 @@ $$\Phi(\rho)=|\psi^\star\rangle\langle\psi^\star|\otimes\xi,\qquad \Phi(M_{a|x}\
 
 ---
 
-## Sources
+## 参考文献
 
 - [Brunner, Cavalcanti, Pironio, Scarani, Wehner, *Bell nonlocality*, Rev. Mod. Phys. 86, 419 (2014)](https://journals.aps.org/rmp/abstract/10.1103/RevModPhys.86.419)
 - [Šupić & Bowles, *Self-testing of quantum systems: a review*, Quantum 4, 337 (2020)](https://quantum-journal.org/papers/q-2020-09-30-337/)｜[arXiv:1904.10042](https://arxiv.org/abs/1904.10042)

@@ -1,0 +1,170 @@
+# ============================================================================
+# Foley的笔记 —— Zensical 配置
+# 文档：https://zensical.org/docs/
+# 网站结构、配色与写作约定见仓库根目录 CLAUDE.md
+# ============================================================================
+
+[project]
+site_name = "Foley的笔记"
+site_url = "https://foley71047.github.io/notes/"
+site_description = "王乐圆（Leyuan Wang）的个人知识库：量子信息科研笔记、系统教程与兴趣探索。"
+site_author = "王乐圆（Leyuan Wang）"
+copyright = "Copyright &copy; 2026 王乐圆（Leyuan Wang）· 南开大学物理学院"
+
+repo_url = "https://github.com/foley71047/notes"
+repo_name = "foley71047/notes"
+
+docs_dir = "docs"
+site_dir = "site"
+
+# 导航：顶层每一项就是一个顶部标签页；每个板块的 index.md 是板块首页。
+# 新增文章时，把它加到对应主题下面。
+nav = [
+  { "首页" = "index.md" },
+  { "科研" = [
+    "research/index.md",
+    { "器件无关与网络非局域性" = [
+      "research/device-independence/index.md",
+      "research/device-independence/di-primer.md",
+      "research/device-independence/no-signalling-and-sources.md",
+    ] },
+  ] },
+  { "教程" = [
+    "tutorials/index.md",
+  ] },
+  { "兴趣" = [
+    "interests/index.md",
+    { "量化交易" = [
+      "interests/quant-trading/index.md",
+      "interests/quant-trading/crypto-quant-trading.md",
+    ] },
+  ] },
+  { "标签" = "tags.md" },
+  { "关于" = [
+    "about/index.md",
+    "about/writing-template.md",
+  ] },
+]
+
+extra_css = ["stylesheets/extra.css"]
+extra_javascript = [
+  "javascripts/mathjax.js",
+  "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js",
+]
+
+# ----------------------------------------------------------------------------
+# 主题
+# ----------------------------------------------------------------------------
+[project.theme]
+language = "zh"
+logo = "assets/logo.svg"
+favicon = "assets/favicon.svg"
+features = [
+  "content.code.annotate",
+  "content.code.copy",
+  "content.code.select",
+  "content.footnote.tooltips",
+  "content.tabs.link",
+  "content.tooltips",
+  "header.autohide",
+  "navigation.footer",
+  "navigation.indexes",
+  "navigation.instant",
+  "navigation.instant.prefetch",
+  "navigation.instant.progress",
+  "navigation.path",
+  "navigation.sections",
+  "navigation.tabs",
+  "navigation.top",
+  "navigation.tracking",
+  "search.highlight",
+  "toc.follow",
+]
+
+# 正文与代码字体由 Google Fonts 加载；标题衬线字体在 extra.css 中加载。
+[project.theme.font]
+text = "Noto Sans SC"
+code = "JetBrains Mono"
+
+[project.theme.icon]
+repo = "fontawesome/brands/github"
+
+[project.theme.icon.tag]
+default = "lucide/hash"
+
+# 浅色（默认）→ 深色。具体色值在 docs/stylesheets/extra.css 中覆盖。
+[[project.theme.palette]]
+scheme = "default"
+primary = "custom"
+accent = "custom"
+toggle.icon = "lucide/moon"
+toggle.name = "切换到深色模式"
+
+[[project.theme.palette]]
+scheme = "slate"
+primary = "custom"
+accent = "custom"
+toggle.icon = "lucide/sun"
+toggle.name = "切换到浅色模式"
+
+# ----------------------------------------------------------------------------
+# 页脚
+# ----------------------------------------------------------------------------
+[project.extra]
+generator = false
+
+[[project.extra.social]]
+icon = "fontawesome/brands/github"
+link = "https://github.com/foley71047"
+name = "GitHub"
+
+[[project.extra.social]]
+icon = "lucide/house"
+link = "https://foley71047.github.io/"
+name = "个人主页 foley71047.github.io"
+
+# ----------------------------------------------------------------------------
+# 插件
+# ----------------------------------------------------------------------------
+# 标签：在页面 front matter 里写 tags，tags.md 中的 <!-- material/tags --> 生成索引
+[project.plugins.tags]
+
+# 搜索：默认开启。按中文标点和空白切分词项，配合搜索引擎自身的 CJK 处理
+[project.plugins.search]
+separator = '[\s​\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])|[，。！？、；：“”‘’（）《》【】]+'
+
+# ----------------------------------------------------------------------------
+# Markdown 扩展
+# ----------------------------------------------------------------------------
+[project.markdown_extensions]
+abbr = {}
+admonition = {}
+attr_list = {}
+def_list = {}
+footnotes = {}
+md_in_html = {}
+tables = {}
+toc.permalink = true
+toc.permalink_title = "本节链接"
+toc.slugify = { object = "pymdownx.slugs.slugify", kwds = { case = "lower" } }
+pymdownx.arithmatex.generic = true
+pymdownx.betterem = {}
+pymdownx.caret = {}
+pymdownx.details = {}
+pymdownx.emoji.emoji_generator = "zensical.extensions.emoji.to_svg"
+pymdownx.emoji.emoji_index = "zensical.extensions.emoji.twemoji"
+pymdownx.highlight.anchor_linenums = true
+pymdownx.highlight.line_spans = "__span"
+pymdownx.highlight.pygments_lang_class = true
+pymdownx.inlinehilite = {}
+pymdownx.keys = {}
+pymdownx.magiclink = {}
+pymdownx.mark = {}
+pymdownx.smartsymbols = {}
+pymdownx.superfences.custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+]
+pymdownx.tabbed.alternate_style = true
+pymdownx.tabbed.combine_header_slug = true
+pymdownx.tasklist.custom_checkbox = true
+pymdownx.tilde = {}

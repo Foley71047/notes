@@ -1,5 +1,17 @@
-# 无信号原理 与 源的假设
-### ——两个你天天见到、但没人正式讲过的东西
+---
+description: 无信号原理约束观测到的关联，源的假设约束背后的因果结构——前者推不出后者。梳理 L⊂Q⊂NS、三种"独立"、源假设阶梯与凸性判据。
+tags:
+  - 无信号原理
+  - 网络非局域性
+  - Bell 非局域性
+  - 器件无关
+  - 研究总结
+---
+
+# 无信号原理与源的假设
+
+两个你天天见到、但没人正式讲过的东西
+{ .page-lead }
 
 ---
 
@@ -14,7 +26,8 @@
 
 ---
 
-# 第一部分：无信号原理（no-signalling, NS）
+**第一部分** 无信号原理（no-signalling, NS）
+{ .part-divider }
 
 ## 1. 它到底说什么
 
@@ -109,7 +122,8 @@ $$\boxed{\text{无信号原理是对 }P\text{ 的约束；源的独立性是对�
 
 ---
 
-# 第二部分：源的假设
+**第二部分** 源的假设
+{ .part-divider }
 
 ## 6. 先把三种"独立"分清楚 ★
 
@@ -272,7 +286,7 @@ L1 是个强假设，但回报也大。四个标志性例子：
 
 ---
 
-## Sources
+## 参考文献
 
 - [Popescu & Rohrlich, *Quantum nonlocality as an axiom*, Found. Phys. 24, 379 (1994)](https://link.springer.com/article/10.1007/BF02058098)
 - [Barrett, Linden, Massar, Pironio, Popescu, Roberts, PRA 71, 022101 (2005)](https://journals.aps.org/pra/abstract/10.1103/PhysRevA.71.022101)
