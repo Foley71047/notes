@@ -1,15 +1,17 @@
 ---
 title: 标签
-description: 按标签浏览全站内容。
+description: 按主题和方法浏览全部笔记与定理。
 icon: lucide/tags
 hide:
-  - tags
+  - navigation
+  - toc
 search:
   exclude: true
 ---
 
 # 标签
 
-每篇文章都带有若干标签。点击文章底部的标签可以跳到这里对应的位置；也可以在搜索框里直接搜索标签名。
+标签只表示主题或方法。点开一个标签，可以看到相关的笔记和定理。
+{ .page-lead }
 
-<!-- material/tags -->
+<!-- 下面的标签列表由 scripts/site_data.py 在构建时自动生成。 -->

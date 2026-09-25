@@ -1,0 +1,3 @@
+# 本目录所有页面共用的 front matter：隐藏左侧栏（笔记之间的导航交给笔记列表和标签）
+hide:
+  - navigation
