@@ -19,7 +19,7 @@
   --fl-accent: #2F6B4F;      /* 强调：墨绿（链接、按钮、当前导航、标签文字） */
   --fl-accent-hover: #23523C;
   --fl-accent-soft: #2F6B4F1A;
-  --fl-on-accent: var(--fl-on-accent);   /* 强调色底上的文字 */
+  --fl-on-accent: #F6F3EA;   /* 强调色底上的文字：纸色 */
   --fl-link: var(--fl-accent);
   --fl-shadow: 0 1px 2px #1E2A230A, 0 8px 24px -12px #1E2A2333;
 
@@ -497,26 +497,6 @@ body {
   text-decoration: none;
 }
 
-/* ---------- 最后更新时间 ---------- */
-.md-source-file {
-  display: flex;
-  align-items: center;
-  gap: 0.4em;
-  margin-top: 2.4em;
-  padding-top: 0.8em;
-  color: var(--fl-text-3);
-  border-top: 1px dashed var(--fl-border);
-}
-
-/* 日期由 CI 写入 front matter 的 revision_date（scripts/site_meta.py --stamp） */
-.md-source-file::before {
-  content: "最后更新";
-}
-
-.md-source-file__fact {
-  margin: 0;
-}
-
 /* ---------- 卡片网格（原生 grid cards） ---------- */
 .md-typeset .grid.cards > ul > li,
 .md-typeset .grid > .card {
@@ -542,22 +522,6 @@ body {
 
 .md-typeset .grid.cards .lg {
   color: var(--fl-accent);
-}
-
-/* 规划中的主题：弱化显示 */
-.md-typeset .grid.cards.fl-planned > ul > li {
-  background-color: transparent;
-  border-style: dashed;
-}
-
-.md-typeset .grid.cards.fl-planned > ul > li:hover {
-  transform: none;
-  box-shadow: none;
-  border-color: var(--fl-text-3);
-}
-
-.md-typeset .grid.cards.fl-planned .lg {
-  color: var(--fl-text-3);
 }
 
 /* ==========================================================================
@@ -676,7 +640,7 @@ body {
   border: 0;
 }
 
-/* 三大板块入口卡片 */
+/* 入口卡片：笔记 / 定理 / 标签 */
 .md-typeset .fl-sections > p {
   display: contents;
 }
@@ -859,6 +823,320 @@ body {
 }
 
 /* ==========================================================================
+   信息栏、笔记列表、定理速查表、标签页
+   这些 HTML 由 scripts/site_data.py 在构建时生成
+   ========================================================================== */
+
+/* 标题下的信息栏：类型 · 更新日期 · 阅读时长 · 前置知识（定理：英文名 · 标签） */
+.md-typeset .fl-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0;
+  align-items: center;
+  margin: -0.3em 0 1.6em;
+  font-size: 0.72rem;
+  line-height: 1.6;
+  color: var(--fl-text-2);
+}
+
+.md-typeset .fl-meta > span + span::before {
+  margin: 0 0.6em;
+  color: var(--fl-border);
+  content: "·";
+}
+
+.md-typeset .fl-meta a {
+  color: var(--fl-link);
+}
+
+.md-typeset .fl-meta__en {
+  font-family: var(--fl-font-serif);
+  font-size: 1.1em;
+  font-style: italic;
+  color: var(--fl-text-2);
+}
+
+.md-typeset .fl-meta__tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+/* 类型徽标（学习 / 研究 / 论文阅读 / 随想 / 定理） */
+.md-typeset .fl-type {
+  display: inline-block;
+  padding: 0 0.6em;
+  font-size: 0.92em;
+  font-weight: 500;
+  line-height: 1.7;
+  color: var(--fl-accent);
+  white-space: nowrap;
+  background: var(--fl-accent-soft);
+  border-radius: 999px;
+}
+
+/* 小号标签（列表和信息栏里） */
+.md-typeset a.fl-tag {
+  display: inline-block;
+  padding: 0 0.55em;
+  font-size: 0.92em;
+  line-height: 1.7;
+  color: var(--fl-text-2);
+  white-space: nowrap;
+  border: 1px solid var(--fl-border);
+  border-radius: 999px;
+  text-decoration: none;
+}
+
+.md-typeset a.fl-tag:hover,
+.md-typeset a.fl-tag:focus {
+  color: var(--fl-on-accent);
+  background: var(--fl-accent);
+  border-color: var(--fl-accent);
+}
+
+.md-typeset .fl-muted {
+  color: var(--fl-text-2);
+}
+
+/* 类型筛选按钮 */
+.md-typeset .fl-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 1.2rem;
+}
+
+.md-typeset .fl-filter__btn {
+  display: inline-flex;
+  gap: 0.4em;
+  align-items: baseline;
+  padding: 0.3em 0.95em;
+  font: inherit;
+  font-size: 0.74rem;
+  color: var(--fl-text);
+  cursor: pointer;
+  background: var(--fl-surface);
+  border: 1px solid var(--fl-border);
+  border-radius: 999px;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.md-typeset .fl-filter__btn:hover,
+.md-typeset .fl-filter__btn:focus-visible {
+  border-color: var(--fl-accent);
+}
+
+.md-typeset .fl-filter__btn[aria-pressed="true"] {
+  color: var(--fl-on-accent);
+  background: var(--fl-accent);
+  border-color: var(--fl-accent);
+}
+
+.md-typeset .fl-filter__count {
+  font-size: 0.86em;
+  opacity: 0.75;
+}
+
+/* 笔记列表 */
+.md-typeset ul.fl-note-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--fl-border);
+}
+
+.md-typeset ul.fl-note-list > li.fl-note {
+  margin: 0;
+  padding: 1rem 0.6rem;
+  border-bottom: 1px solid var(--fl-border);
+  transition: background-color 0.15s ease;
+}
+
+.md-typeset ul.fl-note-list > li.fl-note[hidden] {
+  display: none;
+}
+
+.md-typeset ul.fl-note-list > li.fl-note:hover {
+  background: var(--fl-surface);
+}
+
+.md-typeset ul.fl-note-list > li::before {
+  display: none;
+}
+
+.md-typeset a.fl-note__title {
+  font-family: var(--fl-font-serif);
+  font-size: 1.08em;
+  font-weight: 700;
+  color: var(--fl-text);
+}
+
+.md-typeset a.fl-note__title:hover,
+.md-typeset a.fl-note__title:focus {
+  color: var(--fl-accent);
+}
+
+.md-typeset .fl-note__desc {
+  margin: 0.25rem 0 0.5rem;
+  font-size: 0.76rem;
+  line-height: 1.7;
+  color: var(--fl-text-2);
+}
+
+.md-typeset .fl-note__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.9rem;
+  align-items: center;
+  margin: 0;
+  font-size: 0.68rem;
+  color: var(--fl-text-2);
+}
+
+.md-typeset .fl-note__meta time {
+  font-family: var(--md-code-font-family);
+}
+
+.md-typeset .fl-note__tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+/* 定理速查表 */
+.md-typeset .fl-thm-index {
+  overflow-x: auto;
+}
+
+.md-typeset .fl-thm-index table {
+  display: table;
+  width: 100%;
+}
+
+.md-typeset .fl-thm-index .fl-thm-letter th {
+  padding: 0.7em 1.2em 0.2em;
+  font-family: var(--fl-font-serif);
+  font-size: 0.9em;
+  color: var(--fl-accent);
+  background: transparent;
+  border-bottom: 0;
+}
+
+.md-typeset .fl-thm-name {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.md-typeset .fl-thm-en {
+  font-family: var(--fl-font-serif);
+  font-style: italic;
+  color: var(--fl-text-2);
+  white-space: nowrap;
+}
+
+/* 引用本定理的笔记、标签页里的条目 */
+.md-typeset ul.fl-backlinks {
+  margin: 0.4em 0 1.2em;
+  padding: 0;
+  list-style: none;
+}
+
+.md-typeset ul.fl-backlinks > li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.7rem;
+  align-items: baseline;
+  margin: 0;
+  padding: 0.35em 0;
+  border-bottom: 1px dashed var(--fl-border);
+}
+
+.md-typeset ul.fl-backlinks > li::before {
+  display: none;
+}
+
+.md-typeset ul.fl-backlinks time {
+  margin-left: auto;
+  font-family: var(--md-code-font-family);
+  font-size: 0.85em;
+  color: var(--fl-text-2);
+}
+
+/* 标签页：入口显示全部标签和文章数；点一个标签只显示该标签（需要 JavaScript，没有时全部显示） */
+.md-typeset .fl-tag-group h2 {
+  margin: 1.2em 0 0.5em;
+  font-size: 1em;
+  color: var(--fl-text-2);
+  border: 0;
+}
+
+.md-typeset .fl-tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.md-typeset a.fl-tag-chip {
+  display: inline-flex;
+  gap: 0.45em;
+  align-items: baseline;
+  padding: 0.3em 0.9em;
+  font-size: 0.78rem;
+  color: var(--fl-text);
+  background: var(--fl-surface);
+  border: 1px solid var(--fl-border);
+  border-radius: 999px;
+  text-decoration: none;
+  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+.md-typeset a.fl-tag-chip:hover,
+.md-typeset a.fl-tag-chip:focus {
+  color: var(--fl-accent);
+  border-color: var(--fl-accent);
+}
+
+.md-typeset a.fl-tag-chip.is-active {
+  color: var(--fl-on-accent);
+  background: var(--fl-accent);
+  border-color: var(--fl-accent);
+}
+
+.md-typeset .fl-tag-chip__count {
+  font-size: 0.85em;
+  opacity: 0.75;
+}
+
+.md-typeset .fl-tag-section {
+  margin-top: 2rem;
+}
+
+.md-typeset .fl-tag-section h2 small {
+  margin-left: 0.8em;
+  font-family: var(--md-text-font-family);
+  font-size: 0.55em;
+  font-weight: 400;
+  color: var(--fl-text-2);
+}
+
+.md-typeset .fl-tag-section h3 {
+  margin: 1em 0 0.2em;
+  font-size: 0.95em;
+  color: var(--fl-text-2);
+}
+
+.md-typeset .fl-tags[data-js] .fl-tag-section,
+.md-typeset .fl-tags:not([data-js]) .fl-tag-back {
+  display: none;
+}
+
+.md-typeset .fl-tags[data-js] .fl-tag-section.is-active {
+  display: block;
+}
+
+/* ==========================================================================
    PDF 阅读框
    ========================================================================== */
 .md-typeset .fl-pdf {
@@ -954,6 +1232,7 @@ body {
   --fl-icon-example: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2M6.453 15h11.094M8.5 2h7"/></svg>');
   --fl-icon-warning: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3M12 9v4M12 17h.01"/></svg>');
   --fl-icon-summary: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M13 5h8M13 12h8M13 19h8M3 17l2 2 4-4M3 7l2 2 4-4"/></svg>');
+  --fl-icon-keypoints: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M12 17v5M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>');
   --fl-icon-note: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5M9 18h6M10 22h4"/></svg>');
 }
 
@@ -1009,11 +1288,17 @@ body {
 .md-typeset .summary,
 .md-typeset .abstract,
 .md-typeset .tldr        { --fl-adm: var(--fl-sum);   --fl-adm-icon: var(--fl-icon-summary); }
+.md-typeset .keypoints   { --fl-adm: var(--fl-accent); --fl-adm-icon: var(--fl-icon-keypoints); }
 .md-typeset .note,
 .md-typeset .tip,
 .md-typeset .info,
 .md-typeset .question,
 .md-typeset .quote       { --fl-adm: var(--fl-note);  --fl-adm-icon: var(--fl-icon-note); }
+
+/* 要点框（!!! keypoints "要点"）：放在笔记开头，底色比其他提示框略深 */
+.md-typeset .admonition.keypoints[class] {
+  background-color: color-mix(in srgb, var(--fl-accent) 11%, var(--fl-bg));
+}
 
 /* 定理类：正文用衬线斜体，接近论文排版 */
 .md-typeset .theorem > p:not(.admonition-title),

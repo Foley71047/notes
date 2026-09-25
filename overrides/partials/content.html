@@ -1,0 +1,21 @@
+{#-
+  覆盖主题的 partials/content.html：插入 scripts/site_data.py 生成的内容。
+  - page.meta.fl.bar：一级标题下的信息栏（笔记：类型、更新、阅读时长、前置知识；定理：英文名、标签）
+  - page.meta.fl.after：正文后的内容（列表、标签、引用本定理的笔记）
+  主题原来的标签栏（partials/tags.html）不再使用，标签由 fl.after 输出。
+-#}
+{% include "partials/actions.html" %}
+{% set fl = page.meta.fl if page.meta and page.meta.fl else {} %}
+{% if "<h1" not in page.content %}
+  <h1 id="__skip">{{ page.title | d(config.site_name, true)}}</h1>
+  {{ fl.bar }}
+  {{ page.content }}
+{% elif fl.bar %}
+  {{ page.content | replace("</h1>", "</h1>" ~ fl.bar) }}
+{% else %}
+  {{ page.content }}
+{% endif %}
+{{ fl.after }}
+{% include "partials/source-file.html" %}
+{% include "partials/feedback.html" %}
+{% include "partials/comments.html" %}

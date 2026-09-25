@@ -1,0 +1,3 @@
+# 本目录所有页面共用的 front matter：隐藏左侧栏（词条之间的导航交给速查表和标签）
+hide:
+  - navigation
