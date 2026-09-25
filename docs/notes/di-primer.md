@@ -251,7 +251,7 @@ $$\Phi(\rho)=|\psi^\star\rangle\langle\psi^\star|\otimes\xi,\qquad \Phi(M_{a|x}\
 
 ### 8.1 源独立性是**新的假设**
 它不能从 no-signalling 推出来。它是对因果结构的假设，地位类似 §3.1 的 A2。**没有它，你的判据会出假阳性**：
-> 反例：让 $A_1,A_2$ 直接共享一个 $|\Phi^+\rangle$（源之间有量子关联），中心方只做乘积测量 $M_c=|0\rangle\langle0|\otimes|0\rangle\langle0|$。后选择态仍是 $|\Phi^+\rangle_{A_1A_2}$，[CHSH](../theorems/chsh-inequality.md) 违背，$J_c>0$——但 $M_c$ 是 1-producible。
+> 反例：让 $A_1,A_2$ 直接共享一个 $|\Phi^+\rangle$（源之间有量子关联），中心方只做乘积测量 $M_c=|0\rangle\langle0|\otimes|0\rangle\langle0|$。后选择态仍是 $|\Phi^+\rangle_{A_1A_2}$，[CHSH](../concepts/chsh-inequality.md) 违背，$J_c>0$——但 $M_c$ 是 1-producible。
 
 **好消息**：经典关联的源不会出问题（对每个隐变量 $\mu$ 用引理，再用 $k$-producible 集合的凸性）。所以准确的假设是「**源之间无量子关联**」，比「源独立」弱，值得写成一条 Remark。
 

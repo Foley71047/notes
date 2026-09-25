@@ -7,9 +7,9 @@
 [project]
 site_name = "Foley的笔记"
 site_url = "https://notes.leyuanwang.tech/"
-site_description = "王乐圆（Leyuan Wang）的个人知识库：量子信息笔记、定理速查与兴趣探索。"
-site_author = "王乐圆（Leyuan Wang）"
-copyright = "Copyright &copy; 2026 王乐圆（Leyuan Wang）· 南开大学物理学院"
+site_description = "Foley 的个人知识库：量子信息笔记、概念速查与兴趣探索。"
+site_author = "Foley"
+copyright = "Copyright &copy; 2026 Foley"
 
 repo_url = "https://github.com/foley71047/notes"
 repo_name = "foley71047/notes"
@@ -18,10 +18,10 @@ docs_dir = "docs"
 site_dir = "site"
 
 # 导航：由 docs/.nav.yml 定义顶部五个标签页（awesome-nav 插件）。
-# docs/notes/ 和 docs/theorems/ 下的文件会自动收录，新增文章不需要改这里。
+# docs/notes/ 和 docs/concepts/ 下的文件会自动收录，新增文章不需要改这里。
 
-# 这些文件改动时整站重新生成（笔记列表、标签页、"引用本定理的笔记"都依赖它们）
-watch = ["docs/notes", "docs/theorems", "scripts/site_data.py"]
+# 这些文件改动时整站重新生成（笔记列表、标签页、"引用本概念的笔记"都依赖它们）
+watch = ["docs/notes", "docs/concepts", "scripts/site_data.py"]
 
 extra_css = ["stylesheets/extra.css"]
 extra_javascript = [
@@ -119,7 +119,7 @@ name = "GitHub"
 [[project.extra.social]]
 icon = "lucide/house"
 link = "https://leyuanwang.tech"
-name = "个人主页 leyuanwang.tech"
+name = "Homepage · leyuanwang.tech"
 
 # ----------------------------------------------------------------------------
 # 插件
@@ -127,14 +127,14 @@ name = "个人主页 leyuanwang.tech"
 # 导航：docs/.nav.yml 定义顶部标签页，目录里的新文件自动收录
 [project.plugins.awesome-nav]
 
-# 目录级 front matter：docs/notes/.meta.yml、docs/theorems/.meta.yml
+# 目录级 front matter：docs/notes/.meta.yml、docs/concepts/.meta.yml
 [project.plugins.meta]
 
 # 标签：front matter 里的 tags 进入搜索；标签页本身由 scripts/site_data.py 生成
 [project.plugins.tags]
 
 # 站点数据：渲染每页前运行 scripts/site_data.py 的 define_env()，生成列表、信息栏、
-# 标签页和"引用本定理的笔记"。正文里不使用宏，所以把宏语法换成不会出现的写法，
+# 标签页和"引用本概念的笔记"。正文里不使用宏，所以把宏语法换成不会出现的写法，
 # 避免 LaTeX 里的 {{ }}、{# } 被当成模板。
 [project.plugins.macros]
 module_name = "scripts/site_data"
@@ -145,7 +145,7 @@ j2_block_end_string = "%fl}"
 j2_comment_start_string = "{fl#"
 j2_comment_end_string = "#fl}"
 
-# 旧网址跳转（2026-09 网站改版前的科研 / 教程 / 兴趣板块）
+# 旧网址跳转（2026-09 改版前的科研 / 教程 / 兴趣板块，以及"定理"改名为"概念"）
 [project.plugins.redirects.redirect_maps]
 "research/index.md" = "notes/index.md"
 "research/device-independence/index.md" = "notes/index.md"
@@ -155,6 +155,9 @@ j2_comment_end_string = "#fl}"
 "interests/index.md" = "notes/index.md"
 "interests/quant-trading/index.md" = "notes/index.md"
 "interests/quant-trading/crypto-quant-trading.md" = "notes/crypto-quant-trading.md"
+"theorems/index.md" = "concepts/index.md"
+"theorems/chsh-inequality.md" = "concepts/chsh-inequality.md"
+"theorems/tsirelson-bound.md" = "concepts/tsirelson-bound.md"
 
 # 搜索：默认开启。按中文标点和空白切分词项，配合搜索引擎自身的 CJK 处理
 [project.plugins.search]
@@ -171,8 +174,6 @@ def_list = {}
 footnotes = {}
 md_in_html = {}
 tables = {}
-toc.permalink = true
-toc.permalink_title = "本节链接"
 toc.slugify = { object = "pymdownx.slugs.slugify", kwds = { case = "lower" } }
 pymdownx.arithmatex.generic = true
 pymdownx.betterem = {}
@@ -195,6 +196,6 @@ pymdownx.tabbed.alternate_style = true
 pymdownx.tabbed.combine_header_slug = true
 pymdownx.tasklist.custom_checkbox = true
 pymdownx.tilde = {}
-# 悬停预览：正文里指向定理词条的链接，鼠标悬停时显示词条开头（英文名 + 陈述框）
-"zensical.extensions.preview".targets.include = ["theorems/*.md"]
-"zensical.extensions.preview".targets.exclude = ["theorems/index.md"]
+# 悬停预览：正文里指向概念词条的链接，鼠标悬停时显示词条开头（英文名 + 陈述 / 定义框）
+"zensical.extensions.preview".targets.include = ["concepts/*.md"]
+"zensical.extensions.preview".targets.exclude = ["concepts/index.md"]

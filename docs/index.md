@@ -1,6 +1,6 @@
 ---
 title: 首页
-description: 王乐圆（Leyuan Wang）的个人笔记：量子信息笔记、定理速查与一些其他知识分享。
+description: 王乐圆（Leyuan Wang）的个人笔记：量子信息笔记、概念速查与一些其他知识分享。
 hide:
   - navigation
   - toc
@@ -48,17 +48,17 @@ $$
   <span class="fl-section-card__go">浏览笔记 →</span>
 </a>
 
-<a class="fl-section-card" href="theorems/">
-  <span class="fl-section-card__icon">:lucide-sigma:</span>
-  <span class="fl-section-card__title">定理<span class="fl-section-card__en">Theorems</span></span>
-  <span class="fl-section-card__desc">具体的定理、不等式与结论，一行核心陈述，可当速查表。</span>
-  <span class="fl-section-card__go">查定理 →</span>
+<a class="fl-section-card" href="concepts/">
+  <span class="fl-section-card__icon">:lucide-book-open:</span>
+  <span class="fl-section-card__title">概念<span class="fl-section-card__en">Concepts</span></span>
+  <span class="fl-section-card__desc">定理、不等式与基本概念，一句话陈述，可当速查表。</span>
+  <span class="fl-section-card__go">查概念 →</span>
 </a>
 
 <a class="fl-section-card" href="tags/">
   <span class="fl-section-card__icon">:lucide-tags:</span>
   <span class="fl-section-card__title">标签<span class="fl-section-card__en">Tags</span></span>
-  <span class="fl-section-card__desc">按主题和方法浏览，每个标签下同时列出笔记和定理。</span>
+  <span class="fl-section-card__desc">按主题和方法浏览，每个标签下同时列出笔记和概念。</span>
   <span class="fl-section-card__go">看标签 →</span>
 </a>
 

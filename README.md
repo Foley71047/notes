@@ -1,6 +1,6 @@
 # Foley的笔记
 
-王乐圆（Leyuan Wang）的个人知识库：量子信息笔记、定理速查与兴趣探索。
+王乐圆（Leyuan Wang）的个人知识库：量子信息笔记、概念速查与兴趣探索。
 
 网站：<https://notes.leyuanwang.tech/>
 

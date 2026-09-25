@@ -61,8 +61,8 @@ $$\sum_b p(ab|xy)=\mathrm{Tr}\big[\rho\,(M_{a|x}\otimes\textstyle\sum_b N_{b|y})
 
 | 集合 | 定义 | 几何 | 边界由什么给出 |
 |---|---|---|---|
-| $\mathcal L$ **局域** | $p(\vec a\vert\vec x)=\int d\lambda\,q(\lambda)\prod_i p(a_i\vert x_i,\lambda)$ | **多面体**，顶点=局域确定性策略 | 面（facet）= **Bell 不等式**。[CHSH](../theorems/chsh-inequality.md) $\le2$ |
-| $\mathcal Q$ **量子** | $p=\mathrm{Tr}[\rho\bigotimes M_{a_i\vert x_i}]$ | **凸**，但**不是**多面体（曲面边界） | [Tsirelson 界](../theorems/tsirelson-bound.md) CHSH $\le2\sqrt2$；一般只能用 NPA 层级逼近 |
+| $\mathcal L$ **局域** | $p(\vec a\vert\vec x)=\int d\lambda\,q(\lambda)\prod_i p(a_i\vert x_i,\lambda)$ | **多面体**，顶点=局域确定性策略 | 面（facet）= **Bell 不等式**。[CHSH](../concepts/chsh-inequality.md) $\le2$ |
+| $\mathcal Q$ **量子** | $p=\mathrm{Tr}[\rho\bigotimes M_{a_i\vert x_i}]$ | **凸**，但**不是**多面体（曲面边界） | [Tsirelson 界](../concepts/tsirelson-bound.md) CHSH $\le2\sqrt2$；一般只能用 NPA 层级逼近 |
 | $\mathcal{NS}$ **无信号** | 上面 §1.1 的线性等式 + 归一 + 非负 | **多面体** | 顶点包含 **PR box** |
 
 **PR box**（[Popescu & Rohrlich, *Found. Phys.* **24**, 379 (1994)](https://link.springer.com/article/10.1007/BF02058098)）：$p(ab|xy)=\tfrac12$ 当 $a\oplus b=xy$，否则 0。它满足 NS，但 CHSH $=4>2\sqrt2$。**所以 NS 严格弱于量子。**
