@@ -103,7 +103,7 @@ toggle.name = "当前：深色（点击切换到跟随系统）"
 generator = false
 
 # 笔记类型（front matter 的 type），也是笔记入口页的筛选按钮
-note_types = ["学习", "研究", "论文阅读", "随想"]
+note_types = ["思考", "论文阅读"]
 
 # 固定标签清单：标签只表示主题或方法。新增标签先加到这里（并同步 CLAUDE.md）
 [project.extra.tag_groups]
