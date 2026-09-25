@@ -12,7 +12,7 @@ hide:
 
 **王乐圆（Leyuan Wang）**，南开大学物理学院，研究方向为量子信息，目前关注器件无关认证与网络非局域性。
 
-- 个人主页：[foley71047.github.io](https://foley71047.github.io/)
+- 个人主页：[leyuanwang.tech](https://leyuanwang.tech)
 - GitHub：[@foley71047](https://github.com/foley71047)
 
 ## 本站

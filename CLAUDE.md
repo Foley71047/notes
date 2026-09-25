@@ -1,7 +1,14 @@
 # CLAUDE.md —— Foley的笔记
 
 王乐圆（Leyuan Wang，南开大学物理学院，量子信息方向）的个人知识网站。
-用 [Zensical](https://zensical.org/docs/) 构建，部署在 <https://foley71047.github.io/notes/>。
+用 [Zensical](https://zensical.org/docs/) 构建，部署在 <https://notes.leyuanwang.tech/>（子域名根目录）。
+
+| 站点 | 网址 | 仓库 |
+|---|---|---|
+| 笔记（本仓库） | <https://notes.leyuanwang.tech/> | `foley71047/notes` |
+| 个人主页 | <https://leyuanwang.tech/> | `foley71047/foley71047.github.io`（仓库里的 `CNAME` 文件不要删） |
+
+旧地址 `foley71047.github.io/notes/` 已停用。
 
 ## 常用命令
 
@@ -13,6 +20,9 @@ zensical build --clean --strict      # 严格构建：有失效链接或警告�
 ```
 
 - 推送到 `main` 后，`.github/workflows/docs.yml` 自动构建并部署到 GitHub Pages。
+- 站点地址只在 `zensical.toml` 的 `site_url` 里写一次（`https://notes.leyuanwang.tech/`）。
+  自定义域名在仓库 Settings → Pages → Custom domain 里设置；用 Actions 部署时 `CNAME` 文件会被忽略，所以本仓库不放 `CNAME`。
+- 不要写死 `/notes/` 前缀或站点域名：站内链接一律用相对 `.md` 路径；回个人主页用 `https://leyuanwang.tech`（页脚在 `zensical.toml` 的 `[[project.extra.social]]`）。
 - CI 会运行 `python scripts/site_meta.py --stamp`，把每页 git 最后提交日期写进
   front matter 的 `revision_date`（主题原生显示为"最后更新"）。**本地不要运行 `--stamp`，
   也不要手写 `revision_date`**，否则会把日期提交进仓库。
@@ -140,7 +150,8 @@ PDF 与介绍页同目录同名（`xxx.md` + `xxx.pdf`），介绍页里写摘�
 - 模式切换：顶栏按钮在 **跟随系统 → 浅色 → 深色** 之间循环，默认跟随系统，选择会记住
   （`zensical.toml` 里的三段 `[[project.theme.palette]]`）。
 - Logo / favicon（`docs/assets/*.svg`）是墨绿底纸色字，颜色写死在 SVG 里。
-- 首页 hero 右侧的 self-testing 公式在 `docs/index.md` 的 `.fl-hero__formula` 里，窄屏时移到介绍下方。
+- 首页 hero 右侧的 self-testing 公式在 `docs/index.md` 的 `.fl-hero__formula` 里，窄屏时移到介绍下方；
+  MathJax 排版完成前公式是收起的（CDN 加载失败时就不显示），避免 LaTeX 源码压住介绍文字。
 - 标题：Source Serif 4 + Noto Serif SC（`extra.css` 顶部 `@import`）
 - 正文：Noto Sans SC；代码：JetBrains Mono（`zensical.toml` 的 `theme.font`）
 - Google Fonts 加载失败时回退到苹方 / 微软雅黑 / 宋体。
