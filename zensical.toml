@@ -149,8 +149,6 @@ j2_comment_end_string = "#fl}"
 [project.plugins.redirects.redirect_maps]
 "research/index.md" = "notes/index.md"
 "research/device-independence/index.md" = "notes/index.md"
-"research/device-independence/di-primer.md" = "notes/di-primer.md"
-"research/device-independence/no-signalling-and-sources.md" = "notes/no-signalling-and-sources.md"
 "tutorials/index.md" = "notes/index.md"
 "interests/index.md" = "notes/index.md"
 "interests/quant-trading/index.md" = "notes/index.md"
