@@ -14,14 +14,15 @@
 1. 构建时：zensical.toml 的 [project.plugins.macros] 让 Zensical 在渲染每个页面前
    调用 define_env()。这里把生成的 HTML 写进 page.meta["fl"]（bar 放在标题下，
    after 放在正文后），由 overrides/partials/content.html 插进页面。
-2. 命令行：python scripts/site_data.py 检查所有笔记和概念的元数据
-   （类型、标签是否在清单里、前置知识链接是否存在……），有错误时退出码为 1。
+2. 命令行：python scripts/site_data.py 检查所有笔记和概念的元数据，
+   有错误（front matter 写坏、前置知识指向不存在的页面）时退出码为 1。
 
-允许的类型和标签清单在 zensical.toml 的 [project.extra.note_types] 和
-[project.extra.tag_groups] 里。
+类型和标签都不需要登记：笔记里写什么就出现什么，按篇数从多到少排序，没人用的自动消失。
+zensical.toml 的 [project.extra.tag_groups] 是可选的，只决定标签页上的分组。
 """
 
 import datetime as dt
+from collections import Counter
 import html
 import posixpath
 import re
@@ -75,7 +76,6 @@ class Entry:
 class Site:
     notes: list[Entry]
     concepts: list[Entry]
-    note_types: list[str]
     tag_groups: dict[str, list[str]]
     errors: list[str]
     warnings: list[str]
@@ -92,8 +92,17 @@ class Site:
     def tagged(self, tag: str) -> tuple[list[Entry], list[Entry]]:
         return (
             [n for n in self.notes if tag in n.tags],
-            [t for t in self.concepts if tag in t.tags],
+            [c for c in self.concepts if tag in c.tags],
         )
+
+    def note_types(self) -> list[tuple[str, int]]:
+        """笔记里出现过的类型及篇数，按篇数从多到少（相同按名称）。"""
+        counts = Counter(str(n.meta["type"]) for n in self.notes if n.meta.get("type"))
+        return sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))
+
+    def tag_counts(self) -> Counter:
+        """每个标签被多少篇笔记和概念使用。"""
+        return Counter(tag for e in self.notes + self.concepts for tag in set(e.tags))
 
 
 def split_front_matter(text: str) -> tuple[dict, str]:
@@ -163,15 +172,15 @@ def en_key(entry: "Entry") -> str:
     """概念按英文名排序、按英文名首字母分组；没写 en 时退回标题。"""
     return str(entry.meta.get("en") or entry.title).strip().lower()
 
-def read_config() -> tuple[list[str], dict[str, list[str]]]:
+
+def read_tag_groups() -> dict[str, list[str]]:
+    """zensical.toml 里可选的标签分组；没写就是空。"""
     extra = tomllib.loads(CONFIG.read_text(encoding="utf-8"))["project"].get("extra", {})
-    return list(extra.get("note_types", [])), dict(extra.get("tag_groups", {}))
+    return {str(g): [str(t) for t in tags] for g, tags in extra.get("tag_groups", {}).items()}
 
 
 def collect() -> Site:
-    note_types, tag_groups = read_config()
-    allowed_tags = {t for tags in tag_groups.values() for t in tags}
-    site = Site([], [], note_types, tag_groups, [], [])
+    site = Site([], [], read_tag_groups(), [], [])
 
     for section in SECTIONS:
         for file in sorted((DOCS / section).rglob("*.md")):
@@ -193,40 +202,30 @@ def collect() -> Site:
     dates = git_dates([e.path for e in site.notes + site.concepts])
     for entry in site.notes + site.concepts:
         entry.date = dates[entry.path]
-        check(site, entry, allowed_tags)
+        check(site, entry)
 
     site.notes.sort(key=lambda e: (e.date, e.title), reverse=True)
     site.concepts.sort(key=en_key)
     return site
 
 
-def check(site: Site, entry: Entry, allowed_tags: set[str]) -> None:
-    """检查元数据。错误会让 CI 失败；警告只提示。"""
+def check(site: Site, entry: Entry) -> None:
+    """检查元数据。错误会让 CI 失败（只有真正会出问题的情况）；警告只提示。"""
     p, meta = entry.path, entry.meta
     if not re.search(r"^# .+", entry.body, re.M) and not meta.get("title"):
         site.warnings.append(f"{p}: 没有一级标题（# 标题）")
-    for tag in entry.tags:
-        if tag not in allowed_tags:
-            site.errors.append(f"{p}: 标签「{tag}」不在清单里（zensical.toml 的 tag_groups）")
     if entry.kind == "note":
-        if meta.get("type") not in site.note_types:
-            site.errors.append(
-                f"{p}: type 必须是 {' / '.join(site.note_types)} 之一，现在是 {meta.get('type')!r}"
-            )
-        if not meta.get("description"):
-            site.warnings.append(f"{p}: 缺少 description（一句话摘要）")
-        if not 2 <= len(entry.tags) <= 4:
-            site.warnings.append(f"{p}: 建议 2–4 个标签，现在有 {len(entry.tags)} 个")
+        for key, what in (("description", "一句话摘要"), ("type", "类型")):
+            if not meta.get(key):
+                site.warnings.append(f"{p}: 缺少 {key}（{what}）")
         for item in as_list(meta.get("prerequisites")):
             target = resolve_link(p, str(item))
             if target and not (DOCS / target).is_file():
                 site.errors.append(f"{p}: 前置知识链接的页面不存在：{item}")
     else:
-        for key in ("en", "statement"):
+        for key, what in (("en", "英文名"), ("statement", "简介")):
             if not meta.get(key):
-                site.errors.append(f"{p}: 概念词条缺少 {key}")
-        if not 1 <= len(entry.tags) <= 4:
-            site.warnings.append(f"{p}: 建议 1–4 个标签，现在有 {len(entry.tags)} 个")
+                site.warnings.append(f"{p}: 缺少 {key}（{what}）")
 
 
 def as_list(value) -> list:
@@ -267,8 +266,8 @@ def inline_md(text: str) -> str:
 
 
 def type_badge(entry: Entry) -> str:
-    label = entry.meta.get("type", "") if entry.kind == "note" else "概念"
-    return f'<span class="fl-type">{esc(str(label))}</span>'
+    label = entry.meta.get("type") if entry.kind == "note" else "概念"
+    return f'<span class="fl-type">{esc(str(label))}</span>' if label else ""
 
 
 def tag_links(base: str, tags: list[str], cls: str = "md-tag") -> str:
@@ -332,14 +331,13 @@ def cited_by(site: Site, concept: Entry, base: str) -> str:
 
 
 def notes_list(site: Site, base: str) -> str:
-    counts = {t: sum(n.meta.get("type") == t for n in site.notes) for t in site.note_types}
     buttons = [
         f'<button type="button" class="fl-filter__btn" data-type="" aria-pressed="true">'
         f'全部<span class="fl-filter__count">{len(site.notes)}</span></button>'
     ] + [
         f'<button type="button" class="fl-filter__btn" data-type="{esc(t)}" aria-pressed="false">'
-        f'{esc(t)}<span class="fl-filter__count">{counts[t]}</span></button>'
-        for t in site.note_types
+        f'{esc(t)}<span class="fl-filter__count">{count}</span></button>'
+        for t, count in site.note_types()
     ]
     items = []
     for n in site.notes:
@@ -383,52 +381,58 @@ def concept_table(site: Site, base: str) -> str:
 
 
 def tags_page(site: Site, base: str) -> str:
-    used = {t for e in site.notes + site.concepts for t in e.tags}
-    groups = {g: [t for t in tags if t in used] for g, tags in site.tag_groups.items()}
+    counts = site.tag_counts()
+    by_count = lambda tags: sorted(tags, key=lambda tag: (-counts[tag], tag))  # noqa: E731
+    # 分组顺序按 zensical.toml 的 tag_groups，组内按篇数；清单外的标签归到"其他"
+    groups = {g: by_count(t for t in tags if t in counts) for g, tags in site.tag_groups.items()}
     listed = {t for tags in groups.values() for t in tags}
-    if others := sorted(used - listed):
-        groups["其他"] = others
+    others = by_count(t for t in counts if t not in listed)
+    if others:
+        groups["其他" if listed else ""] = others
     index, sections = [], []
     for group, tags in groups.items():
         if not tags:
             continue
-        chips = []
-        for tag in tags:
-            notes, concepts = site.tagged(tag)
-            chips.append(
-                f'<a class="fl-tag-chip" href="#{esc(tag_slug(tag))}">{esc(tag)}'
-                f'<span class="fl-tag-chip__count">{len(notes) + len(concepts)}</span></a>'
-            )
-            parts = [
-                f'<section class="fl-tag-section" id="{esc(tag_slug(tag))}">',
-                f'<h2>{esc(tag)}<small>{len(notes)} 篇笔记 · {len(concepts)} 个概念</small></h2>',
-            ]
-            if notes:
-                parts.append("<h3>笔记</h3><ul class=\"fl-backlinks\">")
-                parts += [
-                    f"<li>{entry_link(base, n)}{type_badge(n)}"
-                    f'<time datetime="{n.date}">{n.date}</time></li>'
-                    for n in notes
-                ]
-                parts.append("</ul>")
-            if concepts:
-                parts.append("<h3>概念</h3><ul class=\"fl-backlinks\">")
-                parts += [
-                    f'<li>{entry_link(base, t)}<span class="fl-meta__en" lang="en">'
-                    f'{esc(str(t.meta.get("en", "")))}</span></li>'
-                    for t in concepts
-                ]
-                parts.append("</ul>")
-            parts.append('<p class="fl-tag-back"><a href="./">← 全部标签</a></p></section>')
-            sections.append("".join(parts))
-        index.append(
-            f'<div class="fl-tag-group"><h2>{esc(group)}</h2>'
-            f'<p class="fl-tag-cloud">{"".join(chips)}</p></div>'
+        chips = "".join(
+            f'<a class="fl-tag-chip" href="#{esc(tag_slug(tag))}">{esc(tag)}'
+            f'<span class="fl-tag-chip__count">{counts[tag]}</span></a>'
+            for tag in tags
         )
+        heading = f"<h2>{esc(group)}</h2>" if group else ""
+        index.append(f'<div class="fl-tag-group">{heading}<p class="fl-tag-cloud">{chips}</p></div>')
+        sections += [tag_section(site, tag, base) for tag in tags]
+    if not index:
+        return '<p class="fl-muted">还没有标签。</p>'
     return (
         f'<div class="fl-tags" data-fl-tags><div class="fl-tags__index">{"".join(index)}</div>'
         f'{"".join(sections)}</div>'
     )
+
+
+def tag_section(site: Site, tag: str, base: str) -> str:
+    """标签页上某一个标签的详情：相关笔记和概念。"""
+    notes, concepts = site.tagged(tag)
+    parts = [
+        f'<section class="fl-tag-section" id="{esc(tag_slug(tag))}">',
+        f'<h2>{esc(tag)}<small>{len(notes)} 篇笔记 · {len(concepts)} 个概念</small></h2>',
+    ]
+    if notes:
+        parts.append('<h3>笔记</h3><ul class="fl-backlinks">')
+        parts += [
+            f'<li>{entry_link(base, n)}{type_badge(n)}<time datetime="{n.date}">{n.date}</time></li>'
+            for n in notes
+        ]
+        parts.append("</ul>")
+    if concepts:
+        parts.append('<h3>概念</h3><ul class="fl-backlinks">')
+        parts += [
+            f'<li>{entry_link(base, c)}<span class="fl-meta__en" lang="en">'
+            f'{esc(str(c.meta.get("en", "")))}</span></li>'
+            for c in concepts
+        ]
+        parts.append("</ul>")
+    parts.append('<p class="fl-tag-back"><a href="./">← 全部标签</a></p></section>')
+    return "".join(parts)
 
 
 def recent_list(site: Site, base: str) -> str:
@@ -441,8 +445,7 @@ def recent_list(site: Site, base: str) -> str:
             f'<span class="fl-recent__date">{e.date}</span>'
             f'<span class="fl-recent__title">{esc(e.title)}'
             + (f'<span class="fl-recent__desc">{esc(str(desc))}</span>' if desc else "")
-            + f'</span><span class="fl-recent__section">{esc(str(e.meta.get("type", "")) if e.kind == "note" else "概念")}</span>'
-            "</a></li>"
+            + f'</span>{type_badge(e).replace("fl-type", "fl-recent__section")}</a></li>'
         )
     return f'<ul class="fl-recent">{"".join(items)}</ul>'
 

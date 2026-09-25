@@ -30,7 +30,7 @@ jobs:
         with:
           python-version: 3.x
       - run: pip install zensical
-      - name: 检查笔记与定理的元数据（类型、标签清单、前置知识链接）
+      - name: 检查笔记与概念的元数据（front matter、前置知识链接）
         run: python scripts/site_data.py
       - run: zensical build --clean --strict
       - uses: actions/upload-pages-artifact@v5

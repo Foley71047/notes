@@ -14,7 +14,7 @@
 
 ```sh
 pip install zensical
-python scripts/site_data.py          # 检查所有笔记和概念的元数据（类型、标签清单、前置知识链接），有错误时退出码为 1
+python scripts/site_data.py          # 检查元数据：front matter 写坏或前置知识指向不存在的页面时报错（退出码 1），缺字段只警告
 zensical serve                       # 本地预览（地址见终端输出）
 zensical build --clean --strict      # 严格构建：有失效链接或警告即失败（提交前必须通过）
 ```
@@ -28,10 +28,14 @@ zensical build --clean --strict      # 严格构建：有失效链接或警告�
 ## 网站结构
 
 顶部导航五项：**首页 · 笔记 · 概念 · 标签 · 关于**（`docs/.nav.yml`，awesome-nav 插件）。
-`docs/notes/` 和 `docs/concepts/` 里的文件**自动收录**，新增文章不改任何导航或列表。
+
+**增删文章只需要增删 md 文件**：`docs/notes/`、`docs/concepts/` 里的文件自动收录到导航、列表、标签页；
+笔记类型和标签写什么就出现什么，按篇数从多到少排序，没人用的自动消失。不要为此去改 `zensical.toml`。
+唯一会让构建失败的情况：删掉的页面仍被别的页面的正文链接或 `prerequisites` 引用——把那些链接一起删掉即可。
+本站不设旧网址跳转表（改名或删除页面后旧地址直接 404），不要再加 redirects 插件。
 
 ```
-zensical.toml                 # 全部配置：主题、插件、Markdown 扩展、笔记类型、标签清单、旧网址跳转
+zensical.toml                 # 全部配置：主题、插件、Markdown 扩展、可选的标签分组（增删文章不用改它）
 docs/
   .nav.yml                    # 顶部导航（五项）
   index.md                    # 首页（hero + 三张入口卡片 + 最近更新）
@@ -71,12 +75,6 @@ inbox/                        # 待整理的原始文件（不会发布；整理
 - `zensical.toml` 的 `watch` 让笔记或概念改动时整站重新生成；如果本地预览里列表没更新，重启 `zensical serve` 或运行 `zensical build --clean`。
 - 获取当前页面依赖 Zensical 内部的 `ContextExtension`（见 `current_page()` 的注释）。升级 Zensical 后若构建报"找不到当前页面"，先看这里。
 
-### 旧网址
-
-改版前的 `research/…`、`tutorials/`、`interests/…` 页面，以及改名前的 `theorems/…`，在 `zensical.toml` 的 `[project.plugins.redirects.redirect_maps]` 里跳转到新地址。
-以后移动或改名页面时也在这里加一条，避免失效链接。（PDF 等非页面文件无法跳转。）
-**删除或改名页面时要检查这张表**：构建工具不会自动清理跳转，目标文件不存在时严格构建会失败（"Redirect target … does not exist"）。删除页面就删掉以它为目标的行（或改成跳到 `notes/index.md`），改名就改目标并加一条"旧名 → 新名"。
-
 ### 改哪一页在哪个文件
 
 | 页面 | 文件 |
@@ -85,7 +83,7 @@ inbox/                        # 待整理的原始文件（不会发布；整理
 | 笔记入口页（标题和一句话简介） | `docs/notes/index.md`（列表自动生成） |
 | 某篇笔记 | `docs/notes/<文件名>.md`（信息栏来自 front matter） |
 | 概念入口页 / 某个概念 | `docs/concepts/index.md` / `docs/concepts/<文件名>.md` |
-| 标签页（标题和简介） | `docs/tags.md`；标签清单在 `zensical.toml` 的 `tag_groups` |
+| 标签页（标题和简介） | `docs/tags.md`；可选的标签分组在 `zensical.toml` 的 `tag_groups` |
 | 关于 / 写作模板 | `docs/about/index.md` / `docs/about/writing-template.md` |
 | 网站名、页脚、顶部导航 | `zensical.toml`（`site_name`、`copyright`、`extra.social`）、`docs/.nav.yml` |
 | 颜色、字体、样式 | `docs/stylesheets/extra.css` |
@@ -94,7 +92,10 @@ inbox/                        # 待整理的原始文件（不会发布；整理
 
 ## 笔记
 
-### 类型（front matter 的 `type`，必填，只能取这三个值）
+### 类型（front matter 的 `type`）
+
+类型不需要登记：笔记里写什么，笔记入口页就多一个同名筛选按钮（按篇数从多到少排，数字自动统计），没人用了按钮自动消失。
+现在用到的类型（示例，可以随意新增）：
 
 | 类型 | 写什么 |
 |---|---|
@@ -102,17 +103,15 @@ inbox/                        # 待整理的原始文件（不会发布；整理
 | `论文阅读` | 一篇论文的问题、方法、结论与疑问 |
 | `有的没的` | 学业以外的内容和零散杂记（比如量化交易） |
 
-类型清单在 `zensical.toml` 的 `[project.extra] note_types`，同时是笔记入口页的筛选按钮（顺序即按钮顺序，数字自动统计）。
-加一类：在列表里加一项，笔记里写 `type: 新类型`；改名或删除：同时改掉用到旧名字的笔记，否则检查脚本报错；并同步更新这张表和写作模板。
 "全部"两字在 `scripts/site_data.py` 的 `notes_list()`，按钮样式在 `extra.css` 的"类型筛选按钮"一节。拿不准类型或是否该公开时先问作者，不要自行决定。
 
 ### 元数据字段
 
 ```yaml
 ---
-description: 一句话摘要              # 必填：笔记列表、首页"最近更新"、搜索结果
-type: 思考                           # 必填：思考 / 论文阅读 / 有的没的
-tags: [器件无关, 纠缠]               # 必填：2–4 个，只能用下面清单里的
+description: 一句话摘要              # 建议填：笔记列表、首页"最近更新"、搜索结果
+type: 思考                           # 建议填：任意文字，写什么就出现什么筛选按钮
+tags: [器件无关, 纠缠]               # 建议填：任意标签，2–4 个为宜
 prerequisites:                       # 可选：信息栏"前置知识"
   - ../concepts/chsh-inequality.md   #   站内页面写相对 .md 路径，显示为该页标题的链接
   - 线性代数                          #   其他原样显示
@@ -140,10 +139,10 @@ PDF 与介绍页同目录同名（`xxx.md` + `xxx.pdf`），介绍页里写摘�
 
 ```yaml
 ---
-en: Tsirelson's bound                                   # 必填：英文名（速查表按它的首字母分组排序）
-statement: '量子力学中 CHSH 值满足 $\lvert S\rvert\le 2\sqrt2$'   # 必填：简介（一两句陈述或定义），速查表第三列；可含公式，用单引号
+en: Tsirelson's bound                                   # 英文名（速查表按它的首字母分组排序）
+statement: '量子力学中 CHSH 值满足 $\lvert S\rvert\le 2\sqrt2$'   # 简介（一两句陈述或定义），速查表第三列；可含公式，用单引号
 description: 一句话说明（用于搜索和 SEO）
-tags: [Bell 非局域性, 半定规划]                          # 1–4 个，只能用清单里的
+tags: [Bell 非局域性, 半定规划]                          # 任意标签，1–4 个为宜
 ---
 ```
 
@@ -159,16 +158,17 @@ tags: [Bell 非局域性, 半定规划]                          # 1–4 个，�
 
 ## 标签
 
-标签只表示**主题或方法**，不表示类型（用 `type`）或状态。固定清单如下，**新增标签先加进清单**
-（`zensical.toml` 的 `[project.extra.tag_groups]` 和这里同时改），`python scripts/site_data.py` 会拒绝清单外的标签。
+标签写什么就出现什么：标签页自动列出所有用到的标签及篇数（按篇数从多到少），没人用的自动消失，**不需要登记**。
+标签尽量表示**主题或方法**（不表示类型或状态），尽量复用已有标签、不造近义词；一篇 2–4 个为宜。
+
+`zensical.toml` 的 `[project.extra.tag_groups]` 是**可选**的，只决定标签页上的分组（主题 / 方法 / 兴趣……），
+不在分组里的标签自动归到"其他"。目前的分组：
 
 | 类别 | 标签 |
 |---|---|
 | 主题 | `纠缠` `Bell 非局域性` `导引` `器件无关` `相干性` `资源理论` `量子测量` `量子态层析` `线性光学` |
 | 方法 | `数值优化` `半定规划` |
 | 兴趣 | `量化` |
-
-笔记每篇 2–4 个（少于 2 个时检查脚本只警告），概念词条 1–4 个。
 
 ## 写作约定
 

@@ -18,7 +18,7 @@ docs_dir = "docs"
 site_dir = "site"
 
 # 导航：由 docs/.nav.yml 定义顶部五个标签页（awesome-nav 插件）。
-# docs/notes/ 和 docs/concepts/ 下的文件会自动收录，新增文章不需要改这里。
+# 新增、删除笔记或概念只需要增删 docs/notes/、docs/concepts/ 里的 md 文件，不用改这个文件。
 
 # 这些文件改动时整站重新生成（笔记列表、标签页、"引用本概念的笔记"都依赖它们）
 watch = ["docs/notes", "docs/concepts", "scripts/site_data.py"]
@@ -97,15 +97,13 @@ toggle.icon = "lucide/moon"
 toggle.name = "当前：深色（点击切换到跟随系统）"
 
 # ----------------------------------------------------------------------------
-# 页脚
+# 页脚与标签分组
 # ----------------------------------------------------------------------------
 [project.extra]
 generator = false
 
-# 笔记类型（front matter 的 type），也是笔记入口页的筛选按钮
-note_types = ["思考", "论文阅读","有的没的"]
-
-# 固定标签清单：标签只表示主题或方法。新增标签先加到这里（并同步 CLAUDE.md）
+# 可选：标签页上的分组。只影响显示位置，不需要先登记——
+# 笔记里写的任何标签都会自动出现，不在这里的归到"其他"；组内按篇数排序。
 [project.extra.tag_groups]
 "主题" = ["纠缠", "Bell 非局域性", "导引", "器件无关", "相干性", "资源理论", "量子测量", "量子态层析", "线性光学"]
 "方法" = ["数值优化", "半定规划"]
@@ -144,18 +142,6 @@ j2_block_start_string = "{fl%"
 j2_block_end_string = "%fl}"
 j2_comment_start_string = "{fl#"
 j2_comment_end_string = "#fl}"
-
-# 旧网址跳转（2026-09 改版前的科研 / 教程 / 兴趣板块，以及"定理"改名为"概念"）
-[project.plugins.redirects.redirect_maps]
-"research/index.md" = "notes/index.md"
-"research/device-independence/index.md" = "notes/index.md"
-"tutorials/index.md" = "notes/index.md"
-"interests/index.md" = "notes/index.md"
-"interests/quant-trading/index.md" = "notes/index.md"
-"interests/quant-trading/crypto-quant-trading.md" = "notes/crypto-quant-trading.md"
-"theorems/index.md" = "concepts/index.md"
-"theorems/chsh-inequality.md" = "concepts/chsh-inequality.md"
-"theorems/tsirelson-bound.md" = "concepts/tsirelson-bound.md"
 
 # 搜索：默认开启。按中文标点和空白切分词项，配合搜索引擎自身的 CJK 处理
 [project.plugins.search]
