@@ -1,6 +1,6 @@
 ---
 title: 首页
-description: 王乐圆（Leyuan Wang）的个人知识space：量子信息科研笔记、 系统教程与一些其他知识分享。
+description: 王乐圆（Leyuan Wang）的个人知识space：量子信息科研笔记、系统教程与一些其他知识分享。
 hide:
   - navigation
   - toc
@@ -17,14 +17,12 @@ search:
 <h1 class="fl-hero__title">Foley的笔记</h1>
 
 <p class="fl-hero__lead">
-Wie'gehts，我是王乐圆（Leyuan Wang），在南开大学物理学院做量子信息方向的研究。
-这里是我的个人笔记空间：随便记录科研里的笔记（目前大部分为ai直出,内容不够精美简介，努力修改中）。
-
+Wie geht's，我是王乐圆（Leyuan Wang），在南开大学物理学院做量子信息方向的研究。这里是我的个人笔记空间：随便记录科研里的笔记（目前大部分为 AI 直出，内容不够精美简洁，努力修改中）。
 </p>
 
 <ul class="fl-hero__meta">
   <li>南开大学物理学院</li>
-  <li>QUANTUM IMFORMATION AND QUANTUM COMPUTATION</li>
+  <li>QUANTUM INFORMATION AND QUANTUM COMPUTATION</li>
   <li>device-independent · Bell-nonlocality</li>
 </ul>
 

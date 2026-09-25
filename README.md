@@ -2,7 +2,7 @@
 
 王乐圆（Leyuan Wang）的个人知识库：量子信息科研笔记、系统教程与兴趣探索。
 
-网站：<https://foley71047.github.io/notes/>
+网站：<https://notes.leyuanwang.tech/>
 
 ## 本地预览
 

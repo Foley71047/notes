@@ -599,6 +599,14 @@ body {
   overflow: visible;
 }
 
+/* MathJax 未加载完（或 CDN 加载失败）时收起公式，避免 LaTeX 原文压在介绍文字上；
+   用 height: 0 而不是 display: none，MathJax 排版时仍能正常测量尺寸 */
+.md-typeset .fl-hero__formula:not(:has(mjx-container)) {
+  height: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
 .md-typeset .fl-hero__eyebrow {
   margin: 0 0 0.6rem;
   font-size: 0.68rem;

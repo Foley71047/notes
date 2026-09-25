@@ -6,7 +6,7 @@
 
 [project]
 site_name = "Foley的笔记"
-site_url = "https://foley71047.github.io/notes/"
+site_url = "https://notes.leyuanwang.tech/"
 site_description = "王乐圆（Leyuan Wang）的个人知识库：量子信息科研笔记、系统教程与兴趣探索。"
 site_author = "王乐圆（Leyuan Wang）"
 copyright = "Copyright &copy; 2026 王乐圆（Leyuan Wang）· 南开大学物理学院"
@@ -130,8 +130,8 @@ name = "GitHub"
 
 [[project.extra.social]]
 icon = "lucide/house"
-link = "https://foley71047.github.io/"
-name = "个人主页 foley71047.github.io"
+link = "https://leyuanwang.tech"
+name = "个人主页 leyuanwang.tech"
 
 # ----------------------------------------------------------------------------
 # 插件
