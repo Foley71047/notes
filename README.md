@@ -7,7 +7,7 @@
 ## 本地预览
 
 ```sh
-pip install zensical pypinyin
+pip install zensical
 zensical serve
 ```
 

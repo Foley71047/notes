@@ -1030,16 +1030,29 @@ body {
   border-bottom: 0;
 }
 
-.md-typeset .fl-concept-name {
+/* 第一列英文名（链接），第二列中文名 */
+.md-typeset .fl-concept-en {
+  font-family: var(--fl-font-serif);
+  font-size: 1.05em;
   font-weight: 600;
   white-space: nowrap;
 }
 
-.md-typeset .fl-concept-en {
-  font-family: var(--fl-font-serif);
-  font-style: italic;
+.md-typeset .fl-concept-name {
   color: var(--fl-text-2);
   white-space: nowrap;
+}
+
+/* 手机上名称可以换行，把宽度留给简介 */
+@media screen and (max-width: 44.9844em) {
+  .md-typeset .fl-concept-en,
+  .md-typeset .fl-concept-name {
+    white-space: normal;
+  }
+
+  .md-typeset .fl-concept-statement {
+    min-width: 11rem;
+  }
 }
 
 /* 引用本概念的笔记、标签页里的条目 */

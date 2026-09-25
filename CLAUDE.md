@@ -13,7 +13,7 @@
 ## 常用命令
 
 ```sh
-pip install zensical pypinyin        # pypinyin 用于概念速查表的拼音排序（没装时退化为按字符排序）
+pip install zensical
 python scripts/site_data.py          # 检查所有笔记和概念的元数据（类型、标签清单、前置知识链接），有错误时退出码为 1
 zensical serve                       # 本地预览（地址见终端输出）
 zensical build --clean --strict      # 严格构建：有失效链接或警告即失败（提交前必须通过）
@@ -40,7 +40,7 @@ docs/
     .meta.yml                 #   本目录共用 front matter（隐藏左侧栏）
     <note>.md  <note>.pdf  images/
   concepts/                   # 概念词条：每个文件一个定理 / 不等式 / 结论 / 基本概念
-    index.md                  #   入口页：自动生成的速查表（按拼音排序）
+    index.md                  #   入口页：自动生成的速查表（按英文名首字母排序；列：英文名 / 中文名 / 简介）
     .meta.yml
     <concept>.md
   tags.md                     # 标签页（自动生成：全部标签及文章数；点开一个标签列出相关笔记和概念）
@@ -102,7 +102,9 @@ inbox/                        # 待整理的原始文件（不会发布；整理
 | `论文阅读` | 一篇论文的问题、方法、结论与疑问 |
 | `随想` | 零散的想法、学业以外的探索 |
 
-类型清单在 `zensical.toml` 的 `[project.extra] note_types`，同时是笔记入口页的筛选按钮。拿不准类型或是否该公开时先问作者，不要自行决定。
+类型清单在 `zensical.toml` 的 `[project.extra] note_types`，同时是笔记入口页的筛选按钮（顺序即按钮顺序，数字自动统计）。
+加一类：在列表里加一项，笔记里写 `type: 新类型`；改名或删除：同时改掉用到旧名字的笔记，否则检查脚本报错；并同步更新这张表和写作模板。
+"全部"两字在 `scripts/site_data.py` 的 `notes_list()`，按钮样式在 `extra.css` 的"类型筛选按钮"一节。拿不准类型或是否该公开时先问作者，不要自行决定。
 
 ### 元数据字段
 
@@ -138,8 +140,8 @@ PDF 与介绍页同目录同名（`xxx.md` + `xxx.pdf`），介绍页里写摘�
 
 ```yaml
 ---
-en: Tsirelson's bound                                   # 必填：英文名
-statement: '量子力学中 CHSH 值满足 $\lvert S\rvert\le 2\sqrt2$'   # 必填：一句话陈述或定义，可含公式；用单引号
+en: Tsirelson's bound                                   # 必填：英文名（速查表按它的首字母分组排序）
+statement: '量子力学中 CHSH 值满足 $\lvert S\rvert\le 2\sqrt2$'   # 必填：简介（一两句陈述或定义），速查表第三列；可含公式，用单引号
 description: 一句话说明（用于搜索和 SEO）
 tags: [Bell 非局域性, 半定规划]                          # 1–4 个，只能用清单里的
 ---
