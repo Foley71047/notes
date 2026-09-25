@@ -869,7 +869,7 @@ body {
   gap: 0.35rem;
 }
 
-/* 类型徽标（学习 / 研究 / 论文阅读 / 随想 / 概念） */
+/* 类型徽标（笔记类型 / 概念） */
 .md-typeset .fl-type {
   display: inline-block;
   padding: 0 0.6em;

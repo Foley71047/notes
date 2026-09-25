@@ -57,8 +57,8 @@ class Entry:
     """一篇笔记或一个概念词条。"""
 
     kind: str          # "note" 或 "concept"
-    path: str          # 相对 docs/ 的源文件路径，如 notes/di-primer.md
-    url: str           # 相对站点根目录的网址，如 notes/di-primer/
+    path: str          # 相对 docs/ 的源文件路径，如 notes/crypto-quant-trading.md
+    url: str           # 相对站点根目录的网址，如 notes/crypto-quant-trading/
     title: str
     meta: dict
     body: str
