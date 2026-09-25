@@ -29,7 +29,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: 3.x
-      - run: pip install zensical pypinyin
+      - run: pip install zensical
       - name: 检查笔记与定理的元数据（类型、标签清单、前置知识链接）
         run: python scripts/site_data.py
       - run: zensical build --clean --strict

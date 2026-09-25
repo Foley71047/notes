@@ -4,7 +4,7 @@
 
 - 笔记入口页（notes/index.md）：类型筛选按钮 + 按更新时间倒序的笔记列表；
 - 每篇笔记：标题下的信息栏（类型、更新日期、前置知识）与文末标签；
-- 概念入口页（concepts/index.md）：按拼音排序的速查表；
+- 概念入口页（concepts/index.md）：按英文名首字母排序的速查表；
 - 每个概念词条：标题下的英文名与标签，文末"引用本概念的笔记"；
 - 标签页（tags.md）：全部标签及文章数，每个标签下的笔记与概念；
 - 首页（index.md）："最近更新"。
@@ -159,13 +159,9 @@ def resolve_link(source: str, target: str) -> str | None:
     return posixpath.normpath(posixpath.join(posixpath.dirname(source), target))
 
 
-def pinyin_key(text: str) -> str:
-    try:
-        from pypinyin import lazy_pinyin
-    except ImportError:
-        return text.lower()
-    return " ".join(lazy_pinyin(text)).lower()
-
+def en_key(entry: "Entry") -> str:
+    """概念按英文名排序、按英文名首字母分组；没写 en 时退回标题。"""
+    return str(entry.meta.get("en") or entry.title).strip().lower()
 
 def read_config() -> tuple[list[str], dict[str, list[str]]]:
     extra = tomllib.loads(CONFIG.read_text(encoding="utf-8"))["project"].get("extra", {})
@@ -200,7 +196,7 @@ def collect() -> Site:
         check(site, entry, allowed_tags)
 
     site.notes.sort(key=lambda e: (e.date, e.title), reverse=True)
-    site.concepts.sort(key=lambda e: pinyin_key(e.title))
+    site.concepts.sort(key=en_key)
     return site
 
 
@@ -366,21 +362,23 @@ def notes_list(site: Site, base: str) -> str:
 
 def concept_table(site: Site, base: str) -> str:
     rows, letter = [], None
-    for t in site.concepts:
-        initial = (pinyin_key(t.title)[:1] or "#").upper()
+    for c in site.concepts:
+        initial = en_key(c)[:1].upper()
+        initial = initial if "A" <= initial <= "Z" else "#"
         if initial != letter:
             letter = initial
             rows.append(f'<tr class="fl-concept-letter"><th colspan="3">{esc(letter)}</th></tr>')
         rows.append(
-            f'<tr><td class="fl-concept-name"><a href="{href(base, t.url)}">{esc(t.title)}</a></td>'
-            f'<td class="fl-concept-en" lang="en">{esc(str(t.meta.get("en", "")))}</td>'
-            f'<td class="fl-concept-statement">{inline_md(t.meta.get("statement", ""))}</td></tr>'
+            f'<tr><td class="fl-concept-en" lang="en"><a href="{href(base, c.url)}">'
+            f'{esc(str(c.meta.get("en") or c.title))}</a></td>'
+            f'<td class="fl-concept-name">{esc(c.title)}</td>'
+            f'<td class="fl-concept-statement">{inline_md(c.meta.get("statement", ""))}</td></tr>'
         )
     if not rows:
         return '<p class="fl-muted">还没有概念词条。</p>'
     return (
-        '<div class="fl-concept-index"><table><thead><tr><th>概念</th><th>English</th>'
-        f'<th>一句话</th></tr></thead><tbody>{"".join(rows)}</tbody></table></div>'
+        '<div class="fl-concept-index"><table><thead><tr><th>English</th><th>中文名</th>'
+        f'<th>简介</th></tr></thead><tbody>{"".join(rows)}</tbody></table></div>'
     )
 
 

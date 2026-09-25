@@ -12,7 +12,7 @@ description: 本站的写作模板：笔记与概念词条的元数据、要点�
 | 目录 | 放什么 | 列表怎么来 |
 |---|---|---|
 | `docs/notes/` | 笔记：学习、研究、论文阅读、随想 | [笔记](../notes/index.md)页自动列出，按更新时间倒序 |
-| `docs/concepts/` | 概念词条：一个定理、不等式、结论或基本概念 | [概念](../concepts/index.md)页自动列出，按拼音排序 |
+| `docs/concepts/` | 概念词条：一个定理、不等式、结论或基本概念 | [概念](../concepts/index.md)页自动列出，按英文名首字母排序 |
 | `docs/about/` | 关于、写作模板 | — |
 
 新建文件后**不需要改导航或任何列表**：笔记列表、概念速查表、[标签](../tags.md)页、首页"最近更新"和"引用本概念的笔记"都在构建时根据元数据自动生成。页面上的信息栏（类型、更新日期、前置知识）也全部来自元数据，正文里不用写。
@@ -87,7 +87,7 @@ prerequisites:                        # 可选
     ````markdown
     ---
     en: Tsirelson's bound                              # 英文名
-    statement: '量子力学中 CHSH 值满足 $\lvert S\rvert\le 2\sqrt2$'   # 一句话，显示在速查表里
+    statement: '量子力学中 CHSH 值满足 $\lvert S\rvert\le 2\sqrt2$'   # 简介，显示在速查表里
     description: 一句话说明，用于搜索结果。
     tags:
       - Bell 非局域性
@@ -133,7 +133,7 @@ prerequisites:                        # 可选
     ## 相关结果
     ````
 
-!!! tip "statement 里的公式"
+!!! tip "简介（statement）里的公式"
     `statement` 支持 `$...$` 公式和 `**加粗**`。整行用单引号括起来（`'...'`），里面的反斜杠照写；不要用双引号，否则反斜杠要写两遍。
 
 ### 悬停预览
