@@ -268,9 +268,16 @@ body {
   font-weight: 700;
 }
 
+/* Logo（docs/assets/logo.svg，作者设计的墨色钢笔画，横向、透明背景） */
 .md-header__button.md-logo img,
 .md-header__button.md-logo svg {
-  height: 1.5rem;
+  width: auto;
+  height: 1.9rem;
+}
+
+/* 深色模式：墨色线条在深色顶栏上看不见，反相成浅色 */
+[data-md-color-scheme="slate"] .md-logo img {
+  filter: invert(1) hue-rotate(180deg) brightness(0.92);
 }
 
 .md-tabs {

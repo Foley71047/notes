@@ -229,7 +229,8 @@ tags: [Bell 非局域性, 半定规划]                          # 1–4 个，�
 
 - 模式切换：顶栏按钮在 **跟随系统 → 浅色 → 深色** 之间循环，默认跟随系统，选择会记住
   （`zensical.toml` 里的三段 `[[project.theme.palette]]`）。
-- Logo / favicon（`docs/assets/*.svg`）是墨绿底纸色字，颜色写死在 SVG 里。
+- Logo / favicon（`docs/assets/logo.svg`、`favicon.svg`）是作者设计的墨色钢笔画（打开的笔记本和小猫，横向、透明背景），不要改动文件本身；
+  深色模式下由 `extra.css` 用 `filter: invert(…)` 把顶栏 logo 反相成浅色。
 - 首页 hero 右侧的 self-testing 公式在 `docs/index.md` 的 `.fl-hero__formula` 里，窄屏时移到介绍下方；
   MathJax 排版完成前公式是收起的（CDN 加载失败时就不显示），避免 LaTeX 源码压住介绍文字。
 - 标题：Source Serif 4 + Noto Serif SC（`extra.css` 顶部 `@import`）
