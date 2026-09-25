@@ -640,7 +640,7 @@ body {
   border: 0;
 }
 
-/* 入口卡片：笔记 / 定理 / 标签 */
+/* 入口卡片：笔记 / 概念 / 标签 */
 .md-typeset .fl-sections > p {
   display: contents;
 }
@@ -823,11 +823,11 @@ body {
 }
 
 /* ==========================================================================
-   信息栏、笔记列表、定理速查表、标签页
+   信息栏、笔记列表、概念速查表、标签页
    这些 HTML 由 scripts/site_data.py 在构建时生成
    ========================================================================== */
 
-/* 标题下的信息栏：类型 · 更新日期 · 阅读时长 · 前置知识（定理：英文名 · 标签） */
+/* 标题下的信息栏：类型 · 更新日期 · 前置知识（概念：英文名 · 标签） */
 .md-typeset .fl-meta {
   display: flex;
   flex-wrap: wrap;
@@ -862,7 +862,7 @@ body {
   gap: 0.35rem;
 }
 
-/* 类型徽标（学习 / 研究 / 论文阅读 / 随想 / 定理） */
+/* 类型徽标（学习 / 研究 / 论文阅读 / 随想 / 概念） */
 .md-typeset .fl-type {
   display: inline-block;
   padding: 0 0.6em;
@@ -1004,17 +1004,17 @@ body {
   gap: 0.35rem;
 }
 
-/* 定理速查表 */
-.md-typeset .fl-thm-index {
+/* 概念速查表 */
+.md-typeset .fl-concept-index {
   overflow-x: auto;
 }
 
-.md-typeset .fl-thm-index table {
+.md-typeset .fl-concept-index table {
   display: table;
   width: 100%;
 }
 
-.md-typeset .fl-thm-index .fl-thm-letter th {
+.md-typeset .fl-concept-index .fl-concept-letter th {
   padding: 0.7em 1.2em 0.2em;
   font-family: var(--fl-font-serif);
   font-size: 0.9em;
@@ -1023,19 +1023,19 @@ body {
   border-bottom: 0;
 }
 
-.md-typeset .fl-thm-name {
+.md-typeset .fl-concept-name {
   font-weight: 600;
   white-space: nowrap;
 }
 
-.md-typeset .fl-thm-en {
+.md-typeset .fl-concept-en {
   font-family: var(--fl-font-serif);
   font-style: italic;
   color: var(--fl-text-2);
   white-space: nowrap;
 }
 
-/* 引用本定理的笔记、标签页里的条目 */
+/* 引用本概念的笔记、标签页里的条目 */
 .md-typeset ul.fl-backlinks {
   margin: 0.4em 0 1.2em;
   padding: 0;

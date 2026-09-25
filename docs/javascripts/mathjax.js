@@ -29,7 +29,7 @@ document$.subscribe(() => {
   MathJax.typesetPromise();
 });
 
-// 悬停预览（链接到定理词条时弹出的卡片）是动态插入的，出现后单独排版其中的公式
+// 悬停预览（链接到概念词条时弹出的卡片）是动态插入的，出现后单独排版其中的公式
 new MutationObserver((mutations) => {
   if (!window.MathJax || !MathJax.typesetPromise) return;
   for (const m of mutations) {

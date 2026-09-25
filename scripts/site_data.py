@@ -1,12 +1,12 @@
-"""站点数据：扫描 docs/notes/ 与 docs/theorems/，生成列表、信息栏和反向链接。
+"""站点数据：扫描 docs/notes/ 与 docs/concepts/，生成列表、信息栏和反向链接。
 
 作者只需要填 front matter，其余内容都在构建时由这里生成：
 
 - 笔记入口页（notes/index.md）：类型筛选按钮 + 按更新时间倒序的笔记列表；
-- 每篇笔记：标题下的信息栏（类型、更新日期、阅读时长、前置知识）与文末标签；
-- 定理入口页（theorems/index.md）：按拼音排序的速查表；
-- 每个定理词条：标题下的英文名与标签，文末"引用本定理的笔记"；
-- 标签页（tags.md）：全部标签及文章数，每个标签下的笔记与定理；
+- 每篇笔记：标题下的信息栏（类型、更新日期、前置知识）与文末标签；
+- 概念入口页（concepts/index.md）：按拼音排序的速查表；
+- 每个概念词条：标题下的英文名与标签，文末"引用本概念的笔记"；
+- 标签页（tags.md）：全部标签及文章数，每个标签下的笔记与概念；
 - 首页（index.md）："最近更新"。
 
 两种用法：
@@ -14,7 +14,7 @@
 1. 构建时：zensical.toml 的 [project.plugins.macros] 让 Zensical 在渲染每个页面前
    调用 define_env()。这里把生成的 HTML 写进 page.meta["fl"]（bar 放在标题下，
    after 放在正文后），由 overrides/partials/content.html 插进页面。
-2. 命令行：python scripts/site_data.py 检查所有笔记和定理的元数据
+2. 命令行：python scripts/site_data.py 检查所有笔记和概念的元数据
    （类型、标签是否在清单里、前置知识链接是否存在……），有错误时退出码为 1。
 
 允许的类型和标签清单在 zensical.toml 的 [project.extra.note_types] 和
@@ -41,7 +41,7 @@ except ModuleNotFoundError:  # Python < 3.11
 ROOT = Path(__file__).resolve().parent.parent
 DOCS = ROOT / "docs"
 CONFIG = ROOT / "zensical.toml"
-SECTIONS = ("notes", "theorems")
+SECTIONS = ("notes", "concepts")
 RECENT_COUNT = 6
 FRONT_MATTER = re.compile(r"\A---\n(.*?)\n---\n", re.S)
 LINK_TARGET = re.compile(r"\]\(\s*<?([^)\s>]+)>?(?:\s+[\"'][^)]*)?\)|^\s*\[[^\]]+\]:\s*<?(\S+?)>?\s*$", re.M)
@@ -54,16 +54,15 @@ LINK_TARGET = re.compile(r"\]\(\s*<?([^)\s>]+)>?(?:\s+[\"'][^)]*)?\)|^\s*\[[^\]]
 
 @dataclass
 class Entry:
-    """一篇笔记或一个定理词条。"""
+    """一篇笔记或一个概念词条。"""
 
-    kind: str          # "note" 或 "theorem"
+    kind: str          # "note" 或 "concept"
     path: str          # 相对 docs/ 的源文件路径，如 notes/di-primer.md
     url: str           # 相对站点根目录的网址，如 notes/di-primer/
     title: str
     meta: dict
     body: str
     date: str = ""
-    minutes: int = 1
     links: set[str] = field(default_factory=set)  # 正文里链接到的站内 .md 文件
 
     @property
@@ -75,25 +74,25 @@ class Entry:
 @dataclass
 class Site:
     notes: list[Entry]
-    theorems: list[Entry]
+    concepts: list[Entry]
     note_types: list[str]
     tag_groups: dict[str, list[str]]
     errors: list[str]
     warnings: list[str]
 
     def entry(self, path: str) -> Entry | None:
-        for e in self.notes + self.theorems:
+        for e in self.notes + self.concepts:
             if e.path == path:
                 return e
         return None
 
-    def cited_by(self, theorem: Entry) -> list[Entry]:
-        return [n for n in self.notes if theorem.path in n.links]
+    def cited_by(self, concept: Entry) -> list[Entry]:
+        return [n for n in self.notes if concept.path in n.links]
 
     def tagged(self, tag: str) -> tuple[list[Entry], list[Entry]]:
         return (
             [n for n in self.notes if tag in n.tags],
-            [t for t in self.theorems if tag in t.tags],
+            [t for t in self.concepts if tag in t.tags],
         )
 
 
@@ -152,22 +151,6 @@ def git_dates(paths: list[str]) -> dict[str, str]:
     return dates
 
 
-def reading_minutes(body: str) -> int:
-    """估算阅读时长：中文每分钟 400 字，英文每分钟 200 词，
-    独立公式每个 15 秒、行内公式每个 3 秒，代码块不计。"""
-    text = re.sub(r"^(```|~~~).*?^\1", " ", body, flags=re.S | re.M)
-    display = r"\$\$.*?\$\$|\\begin\{([a-z]+\*?)\}.*?\\end\{\1\}"
-    n_display = len(re.findall(display, text, re.S))
-    text = re.sub(display, " ", text, flags=re.S)
-    n_inline = len(re.findall(r"\$[^$\n]+\$", text))
-    text = re.sub(r"\$[^$\n]+\$", " ", text)
-    text = re.sub(r"<[^>]+>|\]\([^)]*\)", " ", text)
-    cjk = len(re.findall(r"[㐀-鿿]", text))
-    words = len(re.findall(r"[A-Za-z]+(?:['-][A-Za-z]+)*", text))
-    minutes = cjk / 400 + words / 200 + n_display * 0.25 + n_inline * 0.05
-    return max(1, round(minutes))
-
-
 def resolve_link(source: str, target: str) -> str | None:
     """把正文里的相对链接解析成相对 docs/ 的 .md 路径；站外链接返回 None。"""
     target = target.split("#", 1)[0]
@@ -204,22 +187,20 @@ def collect() -> Site:
             except yaml.YAMLError as exc:
                 site.errors.append(f"{path}: front matter 不是合法的 YAML（{exc}）")
                 meta, body = {}, file.read_text(encoding="utf-8")
-            kind = "note" if section == "notes" else "theorem"
+            kind = "note" if section == "notes" else "concept"
             entry = Entry(kind, path, page_url(path), page_title(meta, body, path), meta, body)
             for match in LINK_TARGET.finditer(body):
                 if (target := resolve_link(path, match.group(1) or match.group(2))):
                     entry.links.add(target)
-            override = meta.get("reading_time")
-            entry.minutes = int(override) if isinstance(override, int) else reading_minutes(body)
-            (site.notes if kind == "note" else site.theorems).append(entry)
+            (site.notes if kind == "note" else site.concepts).append(entry)
 
-    dates = git_dates([e.path for e in site.notes + site.theorems])
-    for entry in site.notes + site.theorems:
+    dates = git_dates([e.path for e in site.notes + site.concepts])
+    for entry in site.notes + site.concepts:
         entry.date = dates[entry.path]
         check(site, entry, allowed_tags)
 
     site.notes.sort(key=lambda e: (e.date, e.title), reverse=True)
-    site.theorems.sort(key=lambda e: pinyin_key(e.title))
+    site.concepts.sort(key=lambda e: pinyin_key(e.title))
     return site
 
 
@@ -247,7 +228,7 @@ def check(site: Site, entry: Entry, allowed_tags: set[str]) -> None:
     else:
         for key in ("en", "statement"):
             if not meta.get(key):
-                site.errors.append(f"{p}: 定理词条缺少 {key}")
+                site.errors.append(f"{p}: 概念词条缺少 {key}")
         if not 1 <= len(entry.tags) <= 4:
             site.warnings.append(f"{p}: 建议 1–4 个标签，现在有 {len(entry.tags)} 个")
 
@@ -290,7 +271,7 @@ def inline_md(text: str) -> str:
 
 
 def type_badge(entry: Entry) -> str:
-    label = entry.meta.get("type", "定理") if entry.kind == "note" else "定理"
+    label = entry.meta.get("type", "") if entry.kind == "note" else "概念"
     return f'<span class="fl-type">{esc(str(label))}</span>'
 
 
@@ -301,7 +282,7 @@ def tag_links(base: str, tags: list[str], cls: str = "md-tag") -> str:
 
 
 def entry_link(base: str, entry: Entry) -> str:
-    preview = " data-preview" if entry.kind == "theorem" else ""
+    preview = " data-preview" if entry.kind == "concept" else ""
     return f'<a href="{href(base, entry.url)}"{preview}>{esc(entry.title)}</a>'
 
 
@@ -309,7 +290,6 @@ def note_bar(site: Site, note: Entry, base: str) -> str:
     items = [
         type_badge(note),
         f'<span>更新于 <time datetime="{note.date}">{note.date}</time></span>',
-        f"<span>阅读约 {note.minutes} 分钟</span>",
     ]
     prereqs = []
     for item in as_list(note.meta.get("prerequisites")):
@@ -326,11 +306,11 @@ def note_bar(site: Site, note: Entry, base: str) -> str:
     return f'<p class="fl-meta">{"".join(items)}</p>'
 
 
-def theorem_bar(theorem: Entry, base: str) -> str:
-    items = [f'<span class="fl-meta__en" lang="en">{esc(str(theorem.meta.get("en", "")))}</span>']
-    if theorem.tags:
-        items.append(f'<span class="fl-meta__tags">{tag_links(base, theorem.tags, "fl-tag")}</span>')
-    return f'<p class="fl-meta fl-meta--theorem">{"".join(items)}</p>'
+def concept_bar(concept: Entry, base: str) -> str:
+    items = [f'<span class="fl-meta__en" lang="en">{esc(str(concept.meta.get("en", "")))}</span>']
+    if concept.tags:
+        items.append(f'<span class="fl-meta__tags">{tag_links(base, concept.tags, "fl-tag")}</span>')
+    return f'<p class="fl-meta fl-meta--concept">{"".join(items)}</p>'
 
 
 def page_tags(base: str, entry: Entry) -> str:
@@ -339,9 +319,9 @@ def page_tags(base: str, entry: Entry) -> str:
     return f'<nav class="md-tags" aria-label="标签">{tag_links(base, entry.tags)}</nav>'
 
 
-def cited_by(site: Site, theorem: Entry, base: str) -> str:
-    notes = site.cited_by(theorem)
-    out = ['<h2 id="cited-by">引用本定理的笔记</h2>']
+def cited_by(site: Site, concept: Entry, base: str) -> str:
+    notes = site.cited_by(concept)
+    out = ['<h2 id="cited-by">引用本概念的笔记</h2>']
     if notes:
         out.append('<ul class="fl-backlinks">')
         out += [
@@ -351,7 +331,7 @@ def cited_by(site: Site, theorem: Entry, base: str) -> str:
         ]
         out.append("</ul>")
     else:
-        out.append('<p class="fl-muted">还没有笔记引用本定理。在笔记里链接到本页，这里会自动出现。</p>')
+        out.append('<p class="fl-muted">还没有笔记引用本概念。在笔记里链接到本页，这里会自动出现。</p>')
     return "\n".join(out)
 
 
@@ -374,7 +354,6 @@ def notes_list(site: Site, base: str) -> str:
             + (f'<p class="fl-note__desc">{esc(str(desc))}</p>' if desc else "")
             + f'<p class="fl-note__meta">{type_badge(n)}'
             f'<time datetime="{n.date}">{n.date}</time>'
-            f"<span>{n.minutes} 分钟</span>"
             f'<span class="fl-note__tags">{tag_links(base, n.tags, "fl-tag")}</span></p></li>'
         )
     return (
@@ -385,28 +364,28 @@ def notes_list(site: Site, base: str) -> str:
     )
 
 
-def theorem_table(site: Site, base: str) -> str:
+def concept_table(site: Site, base: str) -> str:
     rows, letter = [], None
-    for t in site.theorems:
+    for t in site.concepts:
         initial = (pinyin_key(t.title)[:1] or "#").upper()
         if initial != letter:
             letter = initial
-            rows.append(f'<tr class="fl-thm-letter"><th colspan="3">{esc(letter)}</th></tr>')
+            rows.append(f'<tr class="fl-concept-letter"><th colspan="3">{esc(letter)}</th></tr>')
         rows.append(
-            f'<tr><td class="fl-thm-name"><a href="{href(base, t.url)}">{esc(t.title)}</a></td>'
-            f'<td class="fl-thm-en" lang="en">{esc(str(t.meta.get("en", "")))}</td>'
-            f'<td class="fl-thm-statement">{inline_md(t.meta.get("statement", ""))}</td></tr>'
+            f'<tr><td class="fl-concept-name"><a href="{href(base, t.url)}">{esc(t.title)}</a></td>'
+            f'<td class="fl-concept-en" lang="en">{esc(str(t.meta.get("en", "")))}</td>'
+            f'<td class="fl-concept-statement">{inline_md(t.meta.get("statement", ""))}</td></tr>'
         )
     if not rows:
-        return '<p class="fl-muted">还没有定理词条。</p>'
+        return '<p class="fl-muted">还没有概念词条。</p>'
     return (
-        '<div class="fl-thm-index"><table><thead><tr><th>定理</th><th>English</th>'
-        f'<th>核心陈述</th></tr></thead><tbody>{"".join(rows)}</tbody></table></div>'
+        '<div class="fl-concept-index"><table><thead><tr><th>概念</th><th>English</th>'
+        f'<th>一句话</th></tr></thead><tbody>{"".join(rows)}</tbody></table></div>'
     )
 
 
 def tags_page(site: Site, base: str) -> str:
-    used = {t for e in site.notes + site.theorems for t in e.tags}
+    used = {t for e in site.notes + site.concepts for t in e.tags}
     groups = {g: [t for t in tags if t in used] for g, tags in site.tag_groups.items()}
     listed = {t for tags in groups.values() for t in tags}
     if others := sorted(used - listed):
@@ -417,14 +396,14 @@ def tags_page(site: Site, base: str) -> str:
             continue
         chips = []
         for tag in tags:
-            notes, theorems = site.tagged(tag)
+            notes, concepts = site.tagged(tag)
             chips.append(
                 f'<a class="fl-tag-chip" href="#{esc(tag_slug(tag))}">{esc(tag)}'
-                f'<span class="fl-tag-chip__count">{len(notes) + len(theorems)}</span></a>'
+                f'<span class="fl-tag-chip__count">{len(notes) + len(concepts)}</span></a>'
             )
             parts = [
                 f'<section class="fl-tag-section" id="{esc(tag_slug(tag))}">',
-                f'<h2>{esc(tag)}<small>{len(notes)} 篇笔记 · {len(theorems)} 条定理</small></h2>',
+                f'<h2>{esc(tag)}<small>{len(notes)} 篇笔记 · {len(concepts)} 个概念</small></h2>',
             ]
             if notes:
                 parts.append("<h3>笔记</h3><ul class=\"fl-backlinks\">")
@@ -434,12 +413,12 @@ def tags_page(site: Site, base: str) -> str:
                     for n in notes
                 ]
                 parts.append("</ul>")
-            if theorems:
-                parts.append("<h3>定理</h3><ul class=\"fl-backlinks\">")
+            if concepts:
+                parts.append("<h3>概念</h3><ul class=\"fl-backlinks\">")
                 parts += [
                     f'<li>{entry_link(base, t)}<span class="fl-meta__en" lang="en">'
                     f'{esc(str(t.meta.get("en", "")))}</span></li>'
-                    for t in theorems
+                    for t in concepts
                 ]
                 parts.append("</ul>")
             parts.append('<p class="fl-tag-back"><a href="./">← 全部标签</a></p></section>')
@@ -455,7 +434,7 @@ def tags_page(site: Site, base: str) -> str:
 
 
 def recent_list(site: Site, base: str) -> str:
-    entries = sorted(site.notes + site.theorems, key=lambda e: (e.date, e.title), reverse=True)
+    entries = sorted(site.notes + site.concepts, key=lambda e: (e.date, e.title), reverse=True)
     items = []
     for e in entries[:RECENT_COUNT]:
         desc = e.meta.get("description") if e.kind == "note" else e.meta.get("en")
@@ -464,7 +443,7 @@ def recent_list(site: Site, base: str) -> str:
             f'<span class="fl-recent__date">{e.date}</span>'
             f'<span class="fl-recent__title">{esc(e.title)}'
             + (f'<span class="fl-recent__desc">{esc(str(desc))}</span>' if desc else "")
-            + f'</span><span class="fl-recent__section">{esc(str(e.meta.get("type", "定理")) if e.kind == "note" else "定理")}</span>'
+            + f'</span><span class="fl-recent__section">{esc(str(e.meta.get("type", "")) if e.kind == "note" else "概念")}</span>'
             "</a></li>"
         )
     return f'<ul class="fl-recent">{"".join(items)}</ul>'
@@ -479,14 +458,14 @@ def page_parts(site: Site, path: str) -> dict[str, str]:
         return {"after": tags_page(site, base)}
     if path == "notes/index.md":
         return {"after": notes_list(site, base)}
-    if path == "theorems/index.md":
-        return {"after": theorem_table(site, base)}
+    if path == "concepts/index.md":
+        return {"after": concept_table(site, base)}
     entry = site.entry(path)
     if entry is None:
         return {}
     if entry.kind == "note":
         return {"bar": note_bar(site, entry, base), "after": page_tags(base, entry)}
-    return {"bar": theorem_bar(entry, base), "after": cited_by(site, entry, base)}
+    return {"bar": concept_bar(entry, base), "after": cited_by(site, entry, base)}
 
 
 # ---------------------------------------------------------------------------
@@ -494,7 +473,7 @@ def page_parts(site: Site, path: str) -> dict[str, str]:
 # ---------------------------------------------------------------------------
 
 # Zensical 每渲染一个页面都会重新执行本文件，所以缓存挂在 sys.modules 上，
-# 只有笔记、定理或配置改动后才重新扫描。
+# 只有笔记、概念或配置改动后才重新扫描。
 _cache = sys.modules.setdefault("_fl_site_data_cache", types.ModuleType("_fl_site_data_cache"))
 
 
@@ -551,7 +530,7 @@ def main() -> int:
     for message in site.errors:
         print(f"错误  {message}")
     print(
-        f"{len(site.notes)} 篇笔记，{len(site.theorems)} 个定理词条；"
+        f"{len(site.notes)} 篇笔记，{len(site.concepts)} 个概念词条；"
         f"{len(site.errors)} 个错误，{len(site.warnings)} 个警告"
     )
     return 1 if site.errors else 0
