@@ -13,73 +13,144 @@
 ## 常用命令
 
 ```sh
-pip install zensical
-python scripts/site_meta.py          # 刷新首页"最近更新"（新增/改名文章后运行并提交）
+pip install zensical pypinyin        # pypinyin 用于定理速查表的拼音排序（没装时退化为按字符排序）
+python scripts/site_data.py          # 检查所有笔记和定理的元数据（类型、标签清单、前置知识链接），有错误时退出码为 1
 zensical serve                       # 本地预览（地址见终端输出）
 zensical build --clean --strict      # 严格构建：有失效链接或警告即失败（提交前必须通过）
 ```
 
-- 推送到 `main` 后，`.github/workflows/docs.yml` 自动构建并部署到 GitHub Pages。
+- 推送到 `main` 后，`.github/workflows/docs.yml` 先运行 `python scripts/site_data.py` 检查元数据，再构建并部署到 GitHub Pages。
 - 站点地址只在 `zensical.toml` 的 `site_url` 里写一次（`https://notes.leyuanwang.tech/`）。
   自定义域名在仓库 Settings → Pages → Custom domain 里设置；用 Actions 部署时 `CNAME` 文件会被忽略，所以本仓库不放 `CNAME`。
 - 不要写死 `/notes/` 前缀或站点域名：站内链接一律用相对 `.md` 路径；回个人主页用 `https://leyuanwang.tech`（页脚在 `zensical.toml` 的 `[[project.extra.social]]`）。
-- CI 会运行 `python scripts/site_meta.py --stamp`，把每页 git 最后提交日期写进
-  front matter 的 `revision_date`（主题原生显示为"最后更新"）。**本地不要运行 `--stamp`，
-  也不要手写 `revision_date`**，否则会把日期提交进仓库。
 - 提交信息不要添加 Co-Authored-By 或任何 Claude 署名。
 
-## 目录结构
+## 网站结构
+
+顶部导航五项：**首页 · 笔记 · 定理 · 标签 · 关于**（`docs/.nav.yml`，awesome-nav 插件）。
+`docs/notes/` 和 `docs/theorems/` 里的文件**自动收录**，新增文章不改任何导航或列表。
 
 ```
-zensical.toml                 # 全部配置：导航、主题、插件、Markdown 扩展
+zensical.toml                 # 全部配置：主题、插件、Markdown 扩展、笔记类型、标签清单、旧网址跳转
 docs/
-  index.md                    # 首页（hero + 三大板块卡片 + 最近更新）
-  tags.md                     # 标签索引（<!-- material/tags --> 自动生成）
-  research/                   # 科研
-    index.md                  #   板块首页：主题卡片
-    <topic>/index.md          #   主题首页：文章卡片
-    <topic>/<article>.md
-  tutorials/                  # 教程（结构同上）
-  interests/                  # 兴趣（结构同上）
-  about/                      # 关于、写作模板
+  .nav.yml                    # 顶部导航（五项）
+  index.md                    # 首页（hero + 三张入口卡片 + 最近更新）
+  notes/                      # 笔记：学习 / 研究 / 论文阅读 / 随想，全部平铺在这里
+    index.md                  #   入口页：一句话简介 + 自动生成的筛选按钮和笔记列表
+    .meta.yml                 #   本目录共用 front matter（隐藏左侧栏）
+    <note>.md  <note>.pdf  images/
+  theorems/                   # 定理词条：每个文件一个具体的定理 / 不等式 / 结论
+    index.md                  #   入口页：自动生成的速查表（按拼音排序）
+    .meta.yml
+    <theorem>.md
+  tags.md                     # 标签页（自动生成：全部标签及文章数；点开一个标签列出相关笔记和定理）
+  about/
+    index.md                  # 关于：简介、主页链接、最近在做什么
+    writing-template.md       # 写作模板：元数据字段、要点框、定理词条模板、悬停预览、各种写法
   stylesheets/extra.css       # 全部自定义样式（配色变量在文件开头）
-  javascripts/mathjax.js      # MathJax 配置（ams 编号、\ket 等宏）
+  javascripts/mathjax.js      # MathJax 配置（ams 编号、\ket 等宏；悬停预览里的公式排版）
+  javascripts/site.js         # 笔记类型筛选、标签页单标签视图
   assets/                     # logo.svg / favicon.svg
-scripts/site_meta.py          # 生成"最近更新"和 revision_date
+overrides/partials/content.html  # 模板覆盖：把生成的信息栏插到标题下、列表插到正文后
+scripts/site_data.py          # 构建时生成列表、信息栏、标签页、反向链接；命令行运行时检查元数据
 inbox/                        # 待整理的原始文件（不会发布；整理完即删除）
 ```
 
-现有主题：
-
-| 板块 | 主题目录 | 内容 |
-|---|---|---|
-| 科研 | `research/device-independence/` | 器件无关与网络非局域性 |
-| 教程 | —（规划中：量子力学、量子信息基础，只在 `tutorials/index.md` 里以虚线卡片列出） | |
-| 兴趣 | `interests/quant-trading/` | 量化交易 |
-
-## 分类规则
-
-| 板块 | 放什么 | 判断标准 |
-|---|---|---|
-| **科研** `research/` | 量子信息相关的研究推导、论文阅读、研究总结 | 和正在进行的研究直接相关；有"我的项目"、导师讨论、审稿视角 |
-| **教程** `tutorials/` | 系统性的课程与学习笔记（量子力学、量子信息基础……） | 教科书式的已知知识，按章节组织，可以独立复习 |
-| **兴趣** `interests/` | 学业以外的探索（量化交易，以后还有别的） | 与物理专业无关 |
-
-- 每个板块下按**主题**建子目录，每个主题必须有 `index.md`（主题首页，用卡片列出文章）。
-- 拿不准归类时先问作者，不要自行决定。
-- 不要创建空页面。规划中的主题只在板块首页用 `fl-planned` 虚线卡片列出，不建页面、不进导航。
+- 不要创建空页面或占位页面（规划中的内容写在"关于 → 最近在做什么"里）。
 - 作者明确不公开的文件不要放进 `docs/`（`docs/` 里的一切都会发布）。
 
-## 新增文章的步骤
+### 自动生成的内容是怎么来的
 
-1. 文件名用英文或拼音小写加连字符（`self-testing-review.md`），**标题保留中文**，写在第一个 `#` 里；
-2. front matter 写 `description`（一句话，用于首页"最近更新"和搜索）和 `tags`；
-3. 在 `zensical.toml` 的 `nav` 里加到对应主题下；新主题还要在板块 `index.md` 里加卡片；
-4. 在主题 `index.md` 的卡片列表里加一张卡片；
-5. 运行 `python scripts/site_meta.py` 刷新首页"最近更新"，再 `zensical build --clean --strict`。
+`zensical.toml` 的 `[project.plugins.macros]` 让 Zensical 在渲染每页前调用 `scripts/site_data.py` 的 `define_env()`。
+它扫描 `docs/notes/`、`docs/theorems/` 的 front matter 和 git 日期，把 HTML 写进 `page.meta["fl"]`（`bar` 放在一级标题下，`after` 放在正文后），
+由 `overrides/partials/content.html` 插进页面。正文里**不使用宏**（宏语法换成了 `{fl{ }fl}`，LaTeX 里的 `{{ }}` 不受影响）。
+
+- 笔记入口页、定理速查表、标签页、首页"最近更新"、每篇笔记的信息栏和底部标签、定理词条的英文名/标签和"引用本定理的笔记"，都由这里生成。**不要手写这些内容。**
+- 更新日期 = 该文件最后一次 git 提交的日期（`--follow` 跟踪改名）；有未提交改动时显示今天。CI 需要 `fetch-depth: 0`。
+- 阅读时长 = 中文每分钟 400 字 + 英文每分钟 200 词 + 独立公式每个 15 秒 + 行内公式每个 3 秒（代码块不计），取整、至少 1 分钟。
+- "引用本定理的笔记"= 正文里有指向该词条 `.md` 的链接的笔记。
+- `zensical.toml` 的 `watch` 让笔记或定理改动时整站重新生成；如果本地预览里列表没更新，重启 `zensical serve` 或运行 `zensical build --clean`。
+- 获取当前页面依赖 Zensical 内部的 `ContextExtension`（见 `current_page()` 的注释）。升级 Zensical 后若构建报"找不到当前页面"，先看这里。
+
+### 旧网址
+
+改版前的 `research/…`、`tutorials/`、`interests/…` 页面在 `zensical.toml` 的 `[project.plugins.redirects.redirect_maps]` 里跳转到新地址。
+以后移动或改名页面时也在这里加一条，避免失效链接。（PDF 等非页面文件无法跳转。）
+
+## 笔记
+
+### 类型（front matter 的 `type`，必填，只能取这四个值）
+
+| 类型 | 写什么 |
+|---|---|
+| `学习` | 教科书式的已知知识，系统整理、可独立复习（课程笔记、教材读书笔记）。尽量按"直观图像 → 严格定义 → 带数字的例题 → 一句话总结"组织 |
+| `研究` | 和正在进行的研究直接相关：研究推导（定理的完整证明、计算细节）、研究总结（阶段性梳理、与导师讨论后的整理） |
+| `论文阅读` | 一篇论文的问题、方法、结论与疑问 |
+| `随想` | 零散的想法、学业以外的探索 |
+
+类型清单在 `zensical.toml` 的 `[project.extra] note_types`，同时是笔记入口页的筛选按钮。拿不准类型或是否该公开时先问作者，不要自行决定。
+
+### 元数据字段
+
+```yaml
+---
+description: 一句话摘要              # 必填：笔记列表、首页"最近更新"、搜索结果
+type: 研究                           # 必填：学习 / 研究 / 论文阅读 / 随想
+tags: [器件无关, 纠缠]               # 必填：2–4 个，只能用下面清单里的
+prerequisites:                       # 可选：信息栏"前置知识"
+  - di-primer.md                     #   站内页面写相对 .md 路径，显示为该页标题的链接
+  - 线性代数                          #   其他原样显示
+reading_time: 300                    # 可选：分钟数，覆盖自动估算（比如 PDF 教材）
+---
+```
+
+- **全站不使用成熟度、理解度、完成度之类的状态标记**，不要加这类字段、标签或样式。
+- 不要手写更新日期、阅读时长、`revision_date`，它们都自动生成。
+
+### 新增笔记的步骤
+
+1. 在 `docs/notes/` 下新建文件，文件名用英文或拼音小写加连字符（`self-testing-review.md`），**标题保留中文**，写在第一个 `#` 里；
+2. 写 front matter（上面的字段）；长文可在副标题后放 `!!! keypoints "要点"` 提示框；
+3. 提到定理时链接到词条（`[CHSH 不等式](../theorems/chsh-inequality.md)`），会自动得到悬停预览和反向链接；
+4. 运行 `python scripts/site_data.py` 和 `zensical build --clean --strict`。
 
 PDF 与介绍页同目录同名（`xxx.md` + `xxx.pdf`），介绍页里写摘要和章节目录（PDF 内容不进搜索），
 嵌入代码见 `docs/about/writing-template.md`。按钮和 `<iframe src>` 都直接写文件名，构建时自动换算路径。
+
+## 定理
+
+- 每个词条是**一个具体的**定理、不等式或结论（CHSH 不等式、Tsirelson 界……），**不收录领域性概念**（纠缠、Bell 非局域性——那些是标签）。
+- 不要批量生成词条；只在作者需要时逐个添加。
+- 文件名用英文小写加连字符（`tsirelson-bound.md`），标题（中文名）写在第一个 `#` 里。
+
+```yaml
+---
+en: Tsirelson's bound                                   # 必填：英文名
+statement: '量子力学中 CHSH 值满足 $\lvert S\rvert\le 2\sqrt2$'   # 必填：一行核心陈述，可含公式；用单引号
+description: 一句话说明（用于搜索和 SEO）
+tags: [Bell 非局域性, 半定规划]                          # 1–4 个，只能用清单里的
+---
+```
+
+正文结构固定：`!!! theorem "陈述"` 框 → `## 直观含义` → `## 成立条件` → `## 证明思路` → `## 何时取等` → `## 相关结果`。
+英文名和标签（标题下）、"引用本定理的笔记"（文末）自动生成，不要手写。
+
+**悬停预览**：`zensical.toml` 里的 `zensical.extensions.preview` 让所有指向 `docs/theorems/*.md` 的站内链接带上即时预览，
+鼠标悬停时弹出词条开头（一级标题到第一个 `##` 之间：英文名、标签、陈述框），`mathjax.js` 负责排版卡片里的公式。
+只有写成链接的定理名才有预览；没有纯文本自动识别。
+
+## 标签
+
+标签只表示**主题或方法**，不表示类型（用 `type`）或状态。固定清单如下，**新增标签先加进清单**
+（`zensical.toml` 的 `[project.extra.tag_groups]` 和这里同时改），`python scripts/site_data.py` 会拒绝清单外的标签。
+
+| 类别 | 标签 |
+|---|---|
+| 主题 | `纠缠` `Bell 非局域性` `导引` `器件无关` `相干性` `资源理论` `量子测量` `量子态层析` `线性光学` |
+| 方法 | `数值优化` `半定规划` |
+| 兴趣 | `量化` |
+
+笔记每篇 2–4 个（少于 2 个时检查脚本只警告），定理 1–4 个。
 
 ## 写作约定
 
@@ -90,6 +161,7 @@ PDF 与介绍页同目录同名（`xxx.md` + `xxx.pdf`），介绍页里写摘�
 
   | 类型 | 用途 | 颜色 |
   |---|---|---|
+  | `keypoints` | 要点（放在笔记开头，三五条结论） | 墨绿（强调色，底色略深） |
   | `definition` | 定义 | 墨绿 |
   | `theorem` / `lemma` / `corollary` / `proposition` | 定理类（正文斜体） | 深青绿 |
   | `proof` | 证明（结尾自动加 ∎，通常用 `???` 折叠） | 灰 |
@@ -105,17 +177,6 @@ PDF 与介绍页同目录同名（`xxx.md` + `xxx.pdf`），介绍页里写摘�
 - 站内链接写相对 `.md` 路径，构建时会校验。
 - 代码块写语言名（` ```python `），可加 `title="..."`、`linenums="1"`、`hl_lines="2 3"`。
 
-## 标签
-
-尽量复用已有标签，不造近义词。一篇文章 3–6 个标签：**主题标签** + **类型标签**。
-
-| 类别 | 标签 |
-|---|---|
-| 类型 | `研究推导` `论文阅读` `研究总结` `学习笔记` `PDF` |
-| 量子信息 | `器件无关` `Bell 非局域性` `网络非局域性` `自检验` `无信号原理` `纠缠深度` |
-| 量化 | `量化交易` `加密货币` `风险管理` `回测` |
-| 站务 | `写作模板` `本站` |
-
 ## 配色与字体
 
 配色风格为"书卷墨绿"：纸色背景、墨色正文、墨绿强调。所有颜色都是 `docs/stylesheets/extra.css`
@@ -130,12 +191,14 @@ PDF 与介绍页同目录同名（`xxx.md` + `xxx.pdf`），介绍页里写摘�
 | 次要文字（日期、简介、说明） | `--fl-text-2` | `#5B6660` | `#A3ABA5` |
 | 强调（链接、按钮、当前导航、标签文字） | `--fl-accent` | `#2F6B4F` 墨绿 | `#7DBF9C` 浅墨绿 |
 | 链接悬停 | `--fl-accent-hover` | `#23523C` | `#9ED3B6` |
+| 强调色底上的文字（选中的筛选按钮等） | `--fl-on-accent` | `#F6F3EA` | `#161B18` |
 | 边框、分隔线 | `--fl-border` | `#D9D1BC` | `#2E3832` |
 
 提示框（同一色系、低饱和）：
 
 | 类型 | 变量 | 浅色 | 深色 |
 |---|---|---|---|
+| 要点 `keypoints` | `--fl-accent` | `#2F6B4F` 墨绿 | `#7DBF9C` |
 | 定义 `definition` | `--fl-def` | `#2F6B4F` 墨绿 | `#7DBF9C` |
 | 定理类 `theorem` 等 | `--fl-thm` | `#1D6461` 深青绿 | `#6EC2BA` |
 | 证明 `proof` | `--fl-proof` | `#5F6763` 灰 | `#A3ABA5` |
@@ -159,6 +222,7 @@ PDF 与介绍页同目录同名（`xxx.md` + `xxx.pdf`），介绍页里写摘�
 
 ## 已知限制
 
-- Zensical 暂不支持 `git-revision-date` 插件，所以"最后更新"由 `scripts/site_meta.py --stamp` 在 CI 里生成。
+- 自动生成依赖 Zensical 的 macros 支持和一个内部接口（`ContextExtension`），见上文"自动生成的内容是怎么来的"。
+- 标签页的"单个标签"视图是同一页面上的锚点（`tags/#纠缠`）+ JavaScript 过滤；没有 JavaScript 时所有标签一起显示。
 - 搜索界面的少量提示文字（如 "Filters"、"results"）目前只有英文，这是 Zensical 新搜索引擎的现状；中文检索本身正常。
 - MathJax 与 Mermaid 从 CDN（jsDelivr / unpkg）加载。

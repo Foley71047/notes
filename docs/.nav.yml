@@ -1,0 +1,7 @@
+# 顶部导航（awesome-nav）。笔记和定理目录里的文件会自动收录，不需要在这里列出。
+nav:
+  - 首页: index.md
+  - 笔记: notes
+  - 定理: theorems
+  - 标签: tags.md
+  - 关于: about

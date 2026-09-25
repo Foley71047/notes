@@ -7,7 +7,7 @@
 [project]
 site_name = "Foley的笔记"
 site_url = "https://notes.leyuanwang.tech/"
-site_description = "王乐圆（Leyuan Wang）的个人知识库：量子信息科研笔记、系统教程与兴趣探索。"
+site_description = "王乐圆（Leyuan Wang）的个人知识库：量子信息笔记、定理速查与兴趣探索。"
 site_author = "王乐圆（Leyuan Wang）"
 copyright = "Copyright &copy; 2026 王乐圆（Leyuan Wang）· 南开大学物理学院"
 
@@ -17,37 +17,15 @@ repo_name = "foley71047/notes"
 docs_dir = "docs"
 site_dir = "site"
 
-# 导航：顶层每一项就是一个顶部标签页；每个板块的 index.md 是板块首页。
-# 新增文章时，把它加到对应主题下面。
-nav = [
-  { "首页" = "index.md" },
-  { "科研" = [
-    "research/index.md",
-    { "器件无关与网络非局域性" = [
-      "research/device-independence/index.md",
-      "research/device-independence/di-primer.md",
-      "research/device-independence/no-signalling-and-sources.md",
-    ] },
-  ] },
-  { "教程" = [
-    "tutorials/index.md",
-  ] },
-  { "兴趣" = [
-    "interests/index.md",
-    { "量化交易" = [
-      "interests/quant-trading/index.md",
-      "interests/quant-trading/crypto-quant-trading.md",
-    ] },
-  ] },
-  { "标签" = "tags.md" },
-  { "关于" = [
-    "about/index.md",
-    "about/writing-template.md",
-  ] },
-]
+# 导航：由 docs/.nav.yml 定义顶部五个标签页（awesome-nav 插件）。
+# docs/notes/ 和 docs/theorems/ 下的文件会自动收录，新增文章不需要改这里。
+
+# 这些文件改动时整站重新生成（笔记列表、标签页、"引用本定理的笔记"都依赖它们）
+watch = ["docs/notes", "docs/theorems", "scripts/site_data.py"]
 
 extra_css = ["stylesheets/extra.css"]
 extra_javascript = [
+  "javascripts/site.js",
   "javascripts/mathjax.js",
   "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js",
 ]
@@ -57,6 +35,7 @@ extra_javascript = [
 # ----------------------------------------------------------------------------
 [project.theme]
 language = "zh"
+custom_dir = "overrides"          # 模板覆盖：信息栏与自动列表的插入位置
 logo = "assets/logo.svg"
 favicon = "assets/favicon.svg"
 features = [
@@ -123,6 +102,15 @@ toggle.name = "当前：深色（点击切换到跟随系统）"
 [project.extra]
 generator = false
 
+# 笔记类型（front matter 的 type），也是笔记入口页的筛选按钮
+note_types = ["学习", "研究", "论文阅读", "随想"]
+
+# 固定标签清单：标签只表示主题或方法。新增标签先加到这里（并同步 CLAUDE.md）
+[project.extra.tag_groups]
+"主题" = ["纠缠", "Bell 非局域性", "导引", "器件无关", "相干性", "资源理论", "量子测量", "量子态层析", "线性光学"]
+"方法" = ["数值优化", "半定规划"]
+"兴趣" = ["量化"]
+
 [[project.extra.social]]
 icon = "fontawesome/brands/github"
 link = "https://github.com/foley71047"
@@ -136,8 +124,37 @@ name = "个人主页 leyuanwang.tech"
 # ----------------------------------------------------------------------------
 # 插件
 # ----------------------------------------------------------------------------
-# 标签：在页面 front matter 里写 tags，tags.md 中的 <!-- material/tags --> 生成索引
+# 导航：docs/.nav.yml 定义顶部标签页，目录里的新文件自动收录
+[project.plugins.awesome-nav]
+
+# 目录级 front matter：docs/notes/.meta.yml、docs/theorems/.meta.yml
+[project.plugins.meta]
+
+# 标签：front matter 里的 tags 进入搜索；标签页本身由 scripts/site_data.py 生成
 [project.plugins.tags]
+
+# 站点数据：渲染每页前运行 scripts/site_data.py 的 define_env()，生成列表、信息栏、
+# 标签页和"引用本定理的笔记"。正文里不使用宏，所以把宏语法换成不会出现的写法，
+# 避免 LaTeX 里的 {{ }}、{# } 被当成模板。
+[project.plugins.macros]
+module_name = "scripts/site_data"
+j2_variable_start_string = "{fl{"
+j2_variable_end_string = "}fl}"
+j2_block_start_string = "{fl%"
+j2_block_end_string = "%fl}"
+j2_comment_start_string = "{fl#"
+j2_comment_end_string = "#fl}"
+
+# 旧网址跳转（2026-09 网站改版前的科研 / 教程 / 兴趣板块）
+[project.plugins.redirects.redirect_maps]
+"research/index.md" = "notes/index.md"
+"research/device-independence/index.md" = "notes/index.md"
+"research/device-independence/di-primer.md" = "notes/di-primer.md"
+"research/device-independence/no-signalling-and-sources.md" = "notes/no-signalling-and-sources.md"
+"tutorials/index.md" = "notes/index.md"
+"interests/index.md" = "notes/index.md"
+"interests/quant-trading/index.md" = "notes/index.md"
+"interests/quant-trading/crypto-quant-trading.md" = "notes/crypto-quant-trading.md"
 
 # 搜索：默认开启。按中文标点和空白切分词项，配合搜索引擎自身的 CJK 处理
 [project.plugins.search]
@@ -178,3 +195,6 @@ pymdownx.tabbed.alternate_style = true
 pymdownx.tabbed.combine_header_slug = true
 pymdownx.tasklist.custom_checkbox = true
 pymdownx.tilde = {}
+# 悬停预览：正文里指向定理词条的链接，鼠标悬停时显示词条开头（英文名 + 陈述框）
+"zensical.extensions.preview".targets.include = ["theorems/*.md"]
+"zensical.extensions.preview".targets.exclude = ["theorems/index.md"]
