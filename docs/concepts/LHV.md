@@ -57,7 +57,7 @@ $$
 
 ---
 
-## CHSH 不等式（最重要的例子）
+## Bell场景下CHSH 不等式区分 LHV 和 quantum theory
 
 详见词条 [CHSH 不等式](chsh-inequality.md)。
 
@@ -99,9 +99,9 @@ $$
 \mathcal L \;\subsetneq\; \mathcal Q \;\subsetneq\; \mathcal{NS}
 $$
 
-| 集合 | 描述 | CHSH 最大值 |
+| 集合 | 描述 | Bell 场景的CHSH 最大值 |
 |---|---|---|
-| $\mathcal L$ 局域 | LHV 可解释，多胞形 | 2 |
+| $\mathcal L$ 局域 | LHV描述，多胞形 | 2 |
 | $\mathcal Q$ 量子 | 共享量子态 + 本地测量，凸但非多胞形 | $2\sqrt2$ |
 | $\mathcal{NS}$ 无信号 | 仅要求边缘分布不依赖对方输入，多胞形 | 4 |
 
@@ -111,10 +111,10 @@ $$
 
 Jarrett/Shimony 把可分解性拆成两部分：
 
-- **参数独立（PI）**：$p(a|x,y,\lambda)=p(a|x,\lambda)$ —— 对方设置不影响我；
-- **结果独立（OI）**：$p(a|x,y,b,\lambda)=p(a|x,y,\lambda)$ —— 对方结果不影响我。
+- **参数独立（PI）**：$p(a|x,y,\lambda)=p(a|x,\lambda)$ —— 一方设置不影响其他方；
+- **结果独立（OI）**：$p(a|x,y,b,\lambda)=p(a|x,y,\lambda)$ —— 一方结果不影响其他方。
 
-量子力学满足 PI（因此**无信号**，不能用来传信息），但违反可分解性。Bell 非局域性说的是"关联无法用共同原因解释"，而不是"可以超光速发信号"。
+量子力学满足 PI（因此**无信号**，不能用来传信息）。
 
 ---
 
