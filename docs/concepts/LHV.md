@@ -1,14 +1,27 @@
 ---
-en: LHV theory
-statement: ' 经典世界中描述的模型，任何系统都是局域且预先确定的'
+en: Local hidden variable (LHV) theory
+statement: '经典世界中描述的模型，任何系统都是局域且预先确定的'
 description: 经典世界中描述的模型，任何系统都是局域且预先确定的。
 tags:
   - Bell 非局域性
 ---
 # 局域隐变量理论（Local Hidden Variable Theory）
+
+!!! definition "定义"
+    **Bell 场景**：Alice 选测量 $x$ 得结果 $a$，Bob 选测量 $y$ 得结果 $b$，两人类空间隔开。实验可观测的全部数据是一组条件概率 $p(ab|xy)$，称为**行为（behavior）/ 关联**。
+
+    **LHV 模型**：若存在变量 $\lambda$、分布 $\rho(\lambda)$ 以及局部响应函数，使得
+
+    $$
+    p(ab|xy)=\int \rho(\lambda)\, p_A(a|x,\lambda)\, p_B(b|y,\lambda)\, d\lambda
+    $$
+
+    则称该关联是**局域的**（Bell-local）。
+
 ## 1. 问题从哪来
 
 1935 年 EPR 论证：对纠缠态分别测量两个远处粒子，结果完全关联。若假设
+
 - **实在性**：能被确定预言的量，对应客观存在的"实在要素"；
 - **局域性**：对 A 的操作不能瞬间影响 B；
 
@@ -18,29 +31,17 @@ tags:
 
 ---
 
-## 2. 标准场景与定义
-!!! defination "陈述
-    **Bell 场景**：Alice 选测量 $x$ 得结果 $a$，Bob 选测量 $y$ 得结果 $b$，两人类空间隔开。实验可观测的全部数据是一组条件概率 $p(ab|xy)$，称为**行为（behavior）/ 关联**。
+## 2. 定义里的三个假设
 
-    **LHV 模型**：若存在变量 $\lambda$、分布 $\rho(\lambda)$ 以及局部响应函数，使得
+| 假设 | 数学体现 | 含义 |
+|---|---|---|
+| **局域性 / 可分解性** | 给定 λ 后 $p(ab\vert xy,\lambda)=p_A(a\vert x,\lambda)\,p_B(b\vert y,\lambda)$ | Alice 的结果只依赖本地设置和 λ |
+| **测量独立性（自由选择）** | $\rho(\lambda\vert x,y)=\rho(\lambda)$ | λ 与测量选择无关 |
+| **（隐含）存在 λ 这一共同原因** | 对 λ 积分 | 关联源于过去的共同原因 |
 
-    $$
-    p(ab|xy)=\int \rho(\lambda)\, p_A(a|x,\lambda)\, p_B(b|y,\lambda)\, d\lambda 
-    $$
+> 注意：现代表述里并不必须假设"确定性实在论"，只需上面的可分解性（Bell 的 *local causality*）。
 
-    则称该关联是**局域的**（Bell-local）。
-
-    公式里编码了三个假设：
-
-    | 假设 | 数学体现 | 含义 |
-    |---|---|---|
-    | **局域性 / 可分解性** | 给定 λ 后 $p(ab\|xy,\lambda)=p_A(a\|x,\lambda)\,p_B(b\|y,\lambda)$ | Alice 的结果只依赖本地设置和 λ |
-    | **测量独立性（自由选择）** | $\rho(\lambda\|x,y)=\rho(\lambda)$ | λ 与测量选择无关 |
-    | **（隐含）存在 λ 这一共同原因** | 对 λ 积分 | 关联源于过去的共同原因 |
-
-  > 注意：现代表述里并不必须假设"确定性实在论"，只需上面的可分解性（Bell 的 *local causality*）。
-
-  ---
+---
 
 ## 3. 确定性 = 随机性（Fine 定理）
 
@@ -59,6 +60,8 @@ $$
 ---
 
 ## 4. CHSH 不等式（最重要的例子）
+
+详见词条 [CHSH 不等式](chsh-inequality.md)。
 
 取 $a,b\in\{\pm1\}$，定义关联函数 $E_{xy}=\langle ab\rangle_{xy}$，令
 
@@ -81,8 +84,10 @@ $$
 **量子违反**：态 $|\Phi^+\rangle$，取 $A_0=Z,\ A_1=X,\ B_{0,1}=(Z\pm X)/\sqrt2$，得
 
 $$
-S_Q=2\sqrt2\approx 2.83 \quad(\text{Tsirelson 界，量子最大值}).
+S_Q=2\sqrt2\approx 2.83 .
 $$
+
+这是量子力学允许的最大值，即 [Tsirelson 界](tsirelson-bound.md)。
 
 **无信号上界**：PR 盒子可达 $S=4$，不违反相对论但量子力学也无法实现。
 
@@ -107,6 +112,7 @@ $$
 ## 6. 非局域 ≠ 超光速通信
 
 Jarrett/Shimony 把可分解性拆成两部分：
+
 - **参数独立（PI）**：$p(a|x,y,\lambda)=p(a|x,\lambda)$ —— 对方设置不影响我；
 - **结果独立（OI）**：$p(a|x,y,b,\lambda)=p(a|x,y,\lambda)$ —— 对方结果不影响我。
 
@@ -133,15 +139,17 @@ Jarrett/Shimony 把可分解性拆成两部分：
 
 - **非局域 ⇒ 纠缠**：可分离态 $\rho=\sum_i p_i\,\rho_A^i\otimes\rho_B^i$ 天然给出 LHV 模型（λ 就是 $i$）。
 - **纠缠 ⇏ 非局域**：Werner (1989) 构造了纠缠但对所有投影测量都有 LHV 模型的态：
-  $$
-  \rho_W=p\,|\Psi^-\rangle\langle\Psi^-|+(1-p)\,\tfrac{I}{4}
-  $$
-  - $p>1/3$：纠缠
-  - $p>1/2$：可导引（投影测量下）
-  - $p\le 1/2$：Werner 原始 LHV 模型成立；后续工作把投影测量下的局域阈值收紧到约 0.68–0.70
-  - $p>1/\sqrt2\approx0.707$：违反 CHSH
 
-  所以有严格层级：**Bell 非局域 ⊊ EPR 可导引 ⊊ 纠缠**。
+    $$
+    \rho_W=p\,|\Psi^-\rangle\langle\Psi^-|+(1-p)\,\tfrac{I}{4}
+    $$
+
+    - $p>1/3$：纠缠
+    - $p>1/2$：可导引（投影测量下）
+    - $p\le 1/2$：Werner 原始 LHV 模型成立；后续工作把投影测量下的局域阈值收紧到约 0.68–0.70
+    - $p>1/\sqrt2\approx0.707$：违反 CHSH
+
+    所以有严格层级：**Bell 非局域 ⊊ EPR 可导引 ⊊ 纠缠**。
 - 补充：某些局域态经过局域滤波（hidden nonlocality）或多份拷贝后可以显出非局域性。
 
 ---
@@ -157,6 +165,7 @@ Jarrett/Shimony 把可分解性拆成两部分：
 ## 10. 为什么现在还重要：设备无关（DI）
 
 Bell 违反的结论只依赖观测统计 $p(ab|xy)$，不依赖设备内部如何工作。由此产生：
+
 - **DI 量子密钥分发**：CHSH 值直接界定窃听者信息；
 - **DI 随机数认证**：违反 Bell 不等式 ⇒ 输出含有不可预测的随机性；
 - **自检验（self-testing）**：达到 $2\sqrt2$ 可唯一确定（相差局域等距）态为 $|\Phi^+\rangle$、测量为 Pauli；
