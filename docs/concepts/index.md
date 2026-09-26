@@ -1,6 +1,6 @@
 ---
 title: 概念
-description: 定理、不等式、结论与基本概念速查表，按英文名首字母排序。
+description: 定理与基本概念，按英文名首字母排序。
 icon: lucide/book-open
 hide:
   - navigation
@@ -11,7 +11,7 @@ search:
 
 # 概念
 
-定理、不等式、结论与基本概念，按英文名首字母排序，整页可当速查表用。
+定理、不等式、结论与基本概念，按英文名首字母排序。
 { .page-lead }
 
 <!-- 下面的速查表由 scripts/site_data.py 在构建时自动生成：
