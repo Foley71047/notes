@@ -5,7 +5,7 @@ description: 经典世界中描述的模型，任何系统都是局域且预先�
 tags:
   - Bell 非局域性
 ---
-# 局域隐变量理论（Local Hidden Variable Theory）
+# 局域隐变量理论
 
 !!! definition "定义"
     **Bell 场景**：Alice 选测量 $x$ 得结果 $a$，Bob 选测量 $y$ 得结果 $b$，两人类空间隔开。实验可观测的全部数据是一组条件概率 $p(ab|xy)$，称为**行为（behavior）/ 关联**。
