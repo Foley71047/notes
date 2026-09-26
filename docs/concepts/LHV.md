@@ -1,5 +1,11 @@
+---
+en: LHV theory
+statement: ' 经典世界中描述的模型，任何系统都是局域且预先确定的'
+description: 经典世界中描述的模型，任何系统都是局域且预先确定的。
+tags:
+  - Bell 非局域性
+---
 # 局域隐变量理论（Local Hidden Variable Theory）
-
 ## 1. 问题从哪来
 
 1935 年 EPR 论证：对纠缠态分别测量两个远处粒子，结果完全关联。若假设
@@ -13,28 +19,28 @@
 ---
 
 ## 2. 标准场景与定义
+!!! defination "陈述"
+  **Bell 场景**：Alice 选测量 $x$ 得结果 $a$，Bob 选测量 $y$ 得结果 $b$，两人类空间隔开。实验可观测的全部数据是一组条件概率 $p(ab|xy)$，称为**行为（behavior）/ 关联**。
 
-**Bell 场景**：Alice 选测量 $x$ 得结果 $a$，Bob 选测量 $y$ 得结果 $b$，两人类空间隔开。实验可观测的全部数据是一组条件概率 $p(ab|xy)$，称为**行为（behavior）/ 关联**。
+  **LHV 模型**：若存在变量 $\lambda$、分布 $\rho(\lambda)$ 以及局部响应函数，使得
 
-**LHV 模型**：若存在变量 $\lambda$、分布 $\rho(\lambda)$ 以及局部响应函数，使得
+  $$
+  p(ab|xy)=\int \rho(\lambda)\, p_A(a|x,\lambda)\, p_B(b|y,\lambda)\, d\lambda ,
+  $$
 
-$$
-p(ab|xy)=\int \rho(\lambda)\, p_A(a|x,\lambda)\, p_B(b|y,\lambda)\, d\lambda ,
-$$
+  则称该关联是**局域的**（Bell-local）。
 
-则称该关联是**局域的**（Bell-local）。
+  公式里编码了三个假设：
 
-公式里编码了三个假设：
+  | 假设 | 数学体现 | 含义 |
+  |---|---|---|
+  | **局域性 / 可分解性** | 给定 λ 后 $p(ab\|xy,\lambda)=p_A(a\|x,\lambda)\,p_B(b\|y,\lambda)$ | Alice 的结果只依赖本地设置和 λ |
+  | **测量独立性（自由选择）** | $\rho(\lambda\|x,y)=\rho(\lambda)$ | λ 与测量选择无关 |
+  | **（隐含）存在 λ 这一共同原因** | 对 λ 积分 | 关联源于过去的共同原因 |
 
-| 假设 | 数学体现 | 含义 |
-|---|---|---|
-| **局域性 / 可分解性** | 给定 λ 后 $p(ab\|xy,\lambda)=p_A(a\|x,\lambda)\,p_B(b\|y,\lambda)$ | Alice 的结果只依赖本地设置和 λ |
-| **测量独立性（自由选择）** | $\rho(\lambda\|x,y)=\rho(\lambda)$ | λ 与测量选择无关 |
-| **（隐含）存在 λ 这一共同原因** | 对 λ 积分 | 关联源于过去的共同原因 |
+  > 注意：现代表述里并不必须假设"确定性实在论"，只需上面的可分解性（Bell 的 *local causality*）。
 
-> 注意：现代表述里并不必须假设"确定性实在论"，只需上面的可分解性（Bell 的 *local causality*）。
-
----
+  ---
 
 ## 3. 确定性 = 随机性（Fine 定理）
 
