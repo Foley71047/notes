@@ -1,17 +1,15 @@
 ---
-description: 从历史脉络、严格定义到应用，梳理 Kraus 算符如何刻画量子操作、信道与广义测量
-type: 思考
+en: Kraus operator
+statement: kraus算符可以描述任意的量子操作，对应一个 CPTP 映射
+description:  Kraus 算符如何刻画量子操作、信道与广义测量
 tags:
   - 量子测量
   - 半定规划
   - 量子态层析
-prerequisites:
-  - 密度矩阵
-  - 张量积与偏迹
-  - 线性代数
+
 ---
 
-# Kraus 算符：量子操作的算符和表示
+# Kraus 算符
 
 一句话回答：一个物理上合法的量子态变换，到底长什么样？
 { .page-lead }
