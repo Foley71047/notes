@@ -1,7 +1,7 @@
 ---
 en: Concurrence
-statement: '两量子比特态的纠缠度量：纯态 $C=\lvert\braket{\psi}{\tilde\psi}\rvert$，混态由 Wootters 公式 $C=\max(0,\lambda_1-\lambda_2-\lambda_3-\lambda_4)$ 给出，$C>0$ 当且仅当态纠缠'
-description: 并发度是两量子比特系统上可解析计算的纠缠度量，取值 0 到 1，与形成纠缠一一对应。
+statement: '选取一种方式，对纠缠的量化度量'
+description: 并发度是量子比特系统上可解析计算的纠缠度量，通常取值 0 到 1（目前我观察到的）。
 tags:
   - 纠缠
   - 资源理论
@@ -10,21 +10,19 @@ tags:
 # 并发度（Concurrence）
 
 !!! definition "定义"
-    **纯态。** 对两量子比特纯态 $\ket{\psi}$，定义自旋翻转态 $\ket{\tilde\psi}=(\sigma_y\otimes\sigma_y)\ket{\psi^*}$（$^*$ 表示在计算基下取复共轭），并发度为
+    **wootters并发度**
+    对两量子比特纯态 $\ket{\psi}$，定义自旋翻转态 $\ket{\tilde\psi}=(\sigma_y\otimes\sigma_y)\ket{\psi^*}$（$^*$ 表示在计算基下取复共轭），并发度为
 
     $$C(\psi)=\lvert\braket{\psi}{\tilde\psi}\rvert .$$
 
     若 $\ket{\psi}=a\ket{00}+b\ket{01}+c\ket{10}+d\ket{11}$，则 $C(\psi)=2\lvert ad-bc\rvert$。
 
-    **混态。** 对混态 $\rho$，用凸顶（convex roof）推广：
+     对混态情况则 $\rho$，用convex roof推广：
 
     $$C(\rho)=\min_{\{p_i,\psi_i\}}\sum_i p_i\,C(\psi_i),$$
+    **多体量子比特的推广**
 
-    最小值取遍所有满足 $\rho=\sum_i p_i\ket{\psi_i}\bra{\psi_i}$ 的纯态分解。Wootters 证明了它有闭式解：令 $\tilde\rho=(\sigma_y\otimes\sigma_y)\rho^*(\sigma_y\otimes\sigma_y)$，$\lambda_1\ge\lambda_2\ge\lambda_3\ge\lambda_4$ 为 $\rho\tilde\rho$ 的本征值的平方根（等价地，$\sqrt{\sqrt\rho\,\tilde\rho\,\sqrt\rho}$ 的本征值），则
-
-    $$C(\rho)=\max\{0,\ \lambda_1-\lambda_2-\lambda_3-\lambda_4\}.$$
-
-    $0\le C\le 1$，$C=0$ 当且仅当 $\rho$ 可分，$C=1$ 对应最大纠缠态。
+    
 
 ## 直观含义
 
